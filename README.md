@@ -108,6 +108,6 @@ recyclerView.adapter = BaseStickyRecyclerAdapter()
 [license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
 [StickyItemDecoration]: https://github.com/oubowu/StickyItemDecoration
-[StickyRecyclerAdapter]:  https://github.com/panpf/sticky-recycler-item-decoration/blod/master/sticky-recycler-item-decoration/src/main/java/me/panpf/recycler/sticky/StickyRecyclerAdapter.java
-[StickyRecyclerItemDecoration]: https://github.com/panpf/sticky-recycler-item-decoration/blod/master/sticky-recycler-item-decoration/src/main/java/me/panpf/recycler/sticky/StickyRecyclerItemDecoration.java
-[AppHeaderItem]: https://github.com/panpf/sticky-recycler-item-decoration/blod/master/sample/src/main/java/me/panpf/recycler/sticky/sample/adapter/item/AppHeaderItem.kt
+[StickyRecyclerAdapter]:  https://github.com/panpf/sticky-recycler-item-decoration/blob/master/sticky-recycler-item-decoration/src/main/java/me/panpf/recycler/sticky/StickyRecyclerAdapter.java
+[StickyRecyclerItemDecoration]: https://github.com/panpf/sticky-recycler-item-decoration/blob/master/sticky-recycler-item-decoration/src/main/java/me/panpf/recycler/sticky/StickyRecyclerItemDecoration.java
+[AppHeaderItem]: https://github.com/panpf/sticky-recycler-item-decoration/blob/master/sample/src/main/java/me/panpf/recycler/sticky/sample/adapter/item/AppHeaderItem.kt
