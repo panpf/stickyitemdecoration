@@ -46,16 +46,19 @@ class AppHeaderItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<AppHead
         }
     }
 
+    override fun setData(position: Int, data: AppHeader?) {
+        // 从旧的 data 里移除监听
+        data?.listenrs?.remove(appHeaderStatusListener)
+        super.setData(position, data)
+    }
+
     override fun onSetData(i: Int, data: AppHeader?) {
         titleTextView.text = data?.title
         moreTextView.text = moreTextView.resources.getString(R.string.app_child_count, data?.count)
         setExpandStatus(data)
 
-        if (data != null) {
-            rootLayout.onAttachedListener?.onAttachedToWindow()
-        } else {
-            rootLayout.onAttachedListener?.onDetachedFromWindow()
-        }
+        // 注册新 data 的监听
+        data?.listenrs?.add(appHeaderStatusListener)
     }
 
     private fun setExpandStatus(data: AppHeader?) {
