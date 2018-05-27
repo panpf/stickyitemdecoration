@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_layout"
         android:title="@string/menu_layout_list"
-        android:showAsAction="always" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/menu_github"
         android:title="@string/menu_github"

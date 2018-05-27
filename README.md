@@ -10,14 +10,16 @@ StickyRecyclerItemDecoration 是 Android 上黏性头部列表的 RecyclerView �
 ## 特点
 
 * 用法简单，定义一个 ViewGroup 跟 RecyclerView 顶部保持一致，然后 adapter 实现 StickyRecyclerAdapter 接口即可
-* 支持一个列表中有多种 item type 的 header
-* header 支持动态更改高度，但需要你自己做好状态同步，详情请参考 sample 中的 [AppHeaderItem]
-* header 支持点击事件
+* 支持一个列表中有多种 item type 的 sticky item
+* sticky item 可以接收点击事件
+* 支持 sticky item 背景全透明或半透明，当显示 sticky item 的时候列表内相应的 item 会变成 INVISIBLE 状态，避免半透明背景下，显示重复内容
+* 支持动态更改 sticky item 的高度，但需要你自己做好状态同步，详情请参考 sample 中的 [AppHeaderItem]
 
 对比 [StickyItemDecoration]
 
 * 用法更简单，不需要事先在 header ViewGroup 中放入 header 布局以及指定 header item type 的值
 * [StickyItemDecoration] 同时只能有一种类型的 header，StickyRecyclerItemDecoration 支持 N 种
+* 支持 sticky item 背景全透明或半透明
 
 ## 使用指南
 

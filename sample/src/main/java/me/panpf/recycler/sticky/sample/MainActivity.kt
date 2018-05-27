@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private val appsViewModel: AppsViewModel by lazy { ViewModelProviders.of(this).get(AppsViewModel::class.java) }
     private var gridLayout = false
 
-    lateinit var gridCountHeaderHolder: ItemHolder<String>
+    var gridCountHeaderHolder: ItemHolder<String>? = null
     val gridLayoutManager by lazy { AssemblyGridLayoutManager(requireNotNull(baseContext), 3, main_recyclerView) }
     val gridAdapter = AssemblyStickyRecyclerAdapter().apply {
         gridCountHeaderHolder = addHeaderItem(HeaderItem.Factory().setSpanSize(3), null)
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         addItemFactory(AppHeaderItem.Factory().setSpanSize(3))
     }
 
-    lateinit var listCountHeaderHolder: ItemHolder<String>
+    var listCountHeaderHolder: ItemHolder<String>? = null
     val listLayoutManager by lazy { LinearLayoutManager(requireNotNull(baseContext)) }
     val listAdapter = AssemblyStickyRecyclerAdapter().apply {
         listCountHeaderHolder = addHeaderItem(HeaderItem.Factory(), null)
@@ -54,7 +54,11 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+        StickyRecyclerItemDecoration.DEBUG = BuildConfig.DEBUG
         main_recyclerView.addItemDecoration(StickyRecyclerItemDecoration(main_stickyContainerLayout))
+//        main_recyclerView.addItemDecoration(StickyRecyclerItemDecoration(main_stickyContainerLayout).setDisabledScrollStickyHeader(true))
+//        main_recyclerView.addItemDecoration(StickyRecyclerItemDecoration(main_stickyContainerLayout).setInvisibleStickyItemInList(true))
+//        main_recyclerView.addItemDecoration(StickyRecyclerItemDecoration(main_stickyContainerLayout).setDisabledScrollStickyHeader(true).setDisabledInvisibleStickyItemInList(true))
 
         applyLayout()
 
@@ -85,8 +89,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             val countTitle = resources.getString(R.string.app_count_title, it.size)
-            gridCountHeaderHolder.data = countTitle
-            listCountHeaderHolder.data = countTitle
+            gridCountHeaderHolder?.data = countTitle
+            listCountHeaderHolder?.data = countTitle
 
             gridAdapter.dataList = dataList
             listAdapter.dataList = dataList
