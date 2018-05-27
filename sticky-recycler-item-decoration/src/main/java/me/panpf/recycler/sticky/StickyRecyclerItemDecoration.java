@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 
 public class StickyRecyclerItemDecoration extends RecyclerView.ItemDecoration {
 
+    private static final String TAG = "StickyItemDecoration";
     @SuppressWarnings("WeakerAccess")
     public static boolean DEBUG = false;
 
@@ -39,30 +40,32 @@ public class StickyRecyclerItemDecoration extends RecyclerView.ItemDecoration {
 
     @Nullable
     private RecyclerView.Adapter adapter;
-    private int cachedStickyPosition = -1;
-    private SparseArray<RecyclerView.ViewHolder> viewHolderArray = new SparseArray<RecyclerView.ViewHolder>();
+    private int stickyItemPosition = -1;
+    @NonNull
+    private SparseArray<RecyclerView.ViewHolder> viewHolderArray = new SparseArray<>();
 
     public StickyRecyclerItemDecoration(@NonNull ViewGroup stickyItemContainer) {
         this.stickyItemContainer = stickyItemContainer;
     }
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDraw(Canvas c, final RecyclerView parent, RecyclerView.State state) {
         super.onDraw(c, parent, state);
 
         if (!checkAdapter(parent) || adapter == null) {
             return;
         }
 
-        int firstVisiblePosition = findFirstVisiblePosition(parent);
-        int stickItemPosition = findStickyItemPositionToBack(firstVisiblePosition);
+        final int oldStickItemPosition = stickyItemPosition;
+        final int firstVisiblePosition = findFirstVisiblePosition(parent);
+        final int newStickItemPosition = findStickyItemPositionToBack(firstVisiblePosition);
 
         /*
          * 从当前位置往回找最近的一个 sticky item，找到并且是新的就创建 item
          */
-        if (stickItemPosition != -1) {
-            if (stickItemPosition != cachedStickyPosition) {
-                int stickyItemType = getItemTypeByPosition(stickItemPosition);
+        if (newStickItemPosition != -1) {
+            if (newStickItemPosition != stickyItemPosition) {
+                final int stickyItemType = getItemTypeByPosition(newStickItemPosition);
                 if (stickyItemType != -1) {
                     RecyclerView.ViewHolder holder = viewHolderArray.get(stickyItemType);
                     if (holder == null) {
@@ -70,26 +73,26 @@ public class StickyRecyclerItemDecoration extends RecyclerView.ItemDecoration {
                         viewHolderArray.put(stickyItemType, holder);
 
                         if (DEBUG) {
-                            Log.w("sticky", "new sticky item: " + stickItemPosition);
+                            Log.w(TAG, "new sticky item: " + newStickItemPosition);
                         }
                     }
 
                     //noinspection unchecked
-                    adapter.bindViewHolder(holder, stickItemPosition);
+                    adapter.bindViewHolder(holder, newStickItemPosition);
                     if (stickyItemContainer.getChildCount() > 0) {
                         stickyItemContainer.removeAllViews();
                     }
                     stickyItemContainer.addView(holder.itemView);
 
                     if (DEBUG) {
-                        Log.i("sticky", "change sticky item: " + stickItemPosition);
+                        Log.i(TAG, "change sticky item: " + newStickItemPosition);
                     }
 
-                    cachedStickyPosition = stickItemPosition;
+                    stickyItemPosition = newStickItemPosition;
                 }
             }
         } else {
-            cachedStickyPosition = -1;
+            stickyItemPosition = -1;
         }
 
         /*
@@ -99,15 +102,15 @@ public class StickyRecyclerItemDecoration extends RecyclerView.ItemDecoration {
         int belowViewTop = -1;
         int stickyViewTop = -1;
         int stickyContainerHeight = -1;
-        int nextStickPosition = -1;
-        if (cachedStickyPosition != -1) {
+        int nextStickItemPosition = -1;
+        if (stickyItemPosition != -1) {
             offset = 0;
             stickyContainerHeight = stickyItemContainer.getHeight();
-            nextStickPosition = findStickyItemPositionToNext(parent, firstVisiblePosition);
-            if (nextStickPosition >= 0) {
-                View belowItemView = findViewByPosition(parent, nextStickPosition);
-                if (belowItemView != null) {
-                    belowViewTop = belowItemView.getTop();
+            nextStickItemPosition = findStickyItemPositionToNext(parent, firstVisiblePosition);
+            if (nextStickItemPosition >= 0) {
+                View nextStickyItemView = findViewByPosition(parent, nextStickItemPosition);
+                if (nextStickyItemView != null) {
+                    belowViewTop = nextStickyItemView.getTop();
                     if (belowViewTop >= 0 && belowViewTop <= stickyContainerHeight) {
                         offset = belowViewTop - stickyContainerHeight;
                     }
@@ -127,9 +130,11 @@ public class StickyRecyclerItemDecoration extends RecyclerView.ItemDecoration {
         }
 
         if (DEBUG) {
-            Log.d("sticky", String.format("firstVisiblePosition: %d, stickyPosition: %d, newStickPosition: %d, " +
+            Log.d(TAG, String.format(
+                    "firstVisiblePosition: %d, oldStickPosition: %d, newStickPosition: %d, stickyPosition: %d, " +
                             "nextStickPosition: %d, belowViewTop: %d, containerHeight: %d, offset: %d, stickyViewTop: %d",
-                    firstVisiblePosition, cachedStickyPosition, stickItemPosition, nextStickPosition, belowViewTop, stickyContainerHeight, offset, stickyViewTop));
+                    firstVisiblePosition, oldStickItemPosition, newStickItemPosition, stickyItemPosition,
+                    nextStickItemPosition, belowViewTop, stickyContainerHeight, offset, stickyViewTop));
         }
     }
 
@@ -278,6 +283,7 @@ public class StickyRecyclerItemDecoration extends RecyclerView.ItemDecoration {
             stickyItemContainer.removeAllViews();
         }
         stickyItemContainer.setVisibility(View.INVISIBLE);
-        cachedStickyPosition = -1;
+        stickyItemPosition = -1;
+        viewHolderArray.clear();
     }
 }
