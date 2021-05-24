@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.menu_github) {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/panpf/sticky-recycler-item-decoration")))
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/panpf/StickyRecyclerItemDecoration")))
         } else if (item?.itemId == R.id.menu_layout) {
             gridLayout = !gridLayout
             applyLayout()

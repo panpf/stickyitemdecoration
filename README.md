@@ -2,7 +2,7 @@
 
 ![Platform][platform_image]
 [![API][api_image]][api_link]
-[![Release][release_icon]][release_link]
+[![Release][version_icon]][version_link]
 [![License][license_image]][license_link]
 
 StickyRecyclerItemDecoration 是 Android 上黏性头部列表的 RecyclerView 实现版本，可方便的将 item 固定显示在列表的顶部并可跟随滑动替换新的 header item，参考自 [StickyItemDecoration]
@@ -23,15 +23,15 @@ StickyRecyclerItemDecoration 是 Android 上黏性头部列表的 RecyclerView �
 
 ## 使用指南
 
-### 1. 从 JCenter 导入
+### 1. 从 mavenCentral 导入
 
-```groovy
+```kotlin
 dependencies {
-    compile 'me.panpf:sticky-recycler-item-decoration:$lastVersionName'
+    implementation("io.github.panpf.stickyrecycleritemdecoration:stickyrecycleritemdecoration:${LAST_VERSION}")
 }
 ```
 
-`$lastVersionName`：[![Release][release_icon]][release_link]`（不带v）`
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (No include 'v')
 
 ### 2. 定义布局
 
@@ -104,12 +104,12 @@ recyclerView.adapter = BaseStickyRecyclerAdapter()
 
 [platform_image]: https://img.shields.io/badge/Platform-Android-brightgreen.svg
 [api_image]: https://img.shields.io/badge/API-14%2B-orange.svg
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.stickyrecycleritemdecoration/stickyrecycleritemdecoration
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/stickyrecycleritemdecoration/
 [api_link]: https://android-arsenal.com/api?level=14
-[release_icon]: https://img.shields.io/github/release/panpf/sticky-recycler-item-decoration.svg
-[release_link]: https://github.com/panpf/sticky-recycler-item-decoration/releases
 [license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
 [StickyItemDecoration]: https://github.com/oubowu/StickyItemDecoration
-[StickyRecyclerAdapter]:  https://github.com/panpf/sticky-recycler-item-decoration/blob/master/sticky-recycler-item-decoration/src/main/java/me/panpf/recycler/sticky/StickyRecyclerAdapter.java
-[StickyRecyclerItemDecoration]: https://github.com/panpf/sticky-recycler-item-decoration/blob/master/sticky-recycler-item-decoration/src/main/java/me/panpf/recycler/sticky/StickyRecyclerItemDecoration.java
-[AppHeaderItem]: https://github.com/panpf/sticky-recycler-item-decoration/blob/master/sample/src/main/java/me/panpf/recycler/sticky/sample/adapter/item/AppHeaderItem.kt
+[StickyRecyclerAdapter]:  https://github.com/panpf/StickyRecyclerItemDecoration/blob/master/sticky-recycler-item-decoration/src/main/java/me/panpf/recycler/sticky/StickyRecyclerAdapter.java
+[StickyRecyclerItemDecoration]: https://github.com/panpf/StickyRecyclerItemDecoration/blob/master/sticky-recycler-item-decoration/src/main/java/me/panpf/recycler/sticky/StickyRecyclerItemDecoration.java
+[AppHeaderItem]: https://github.com/panpf/StickyRecyclerItemDecoration/blob/master/sample/src/main/java/me/panpf/recycler/sticky/sample/adapter/item/AppHeaderItem.kt
