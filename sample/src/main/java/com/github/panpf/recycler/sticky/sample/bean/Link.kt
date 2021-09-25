@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.recycler.sticky
+package com.github.panpf.recycler.sticky.sample.bean
 
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import com.github.panpf.assemblyadapter.recycler.DiffKey
 
-fun interface StickyItemJudge {
-    fun isStickyItemByPosition(adapter: RecyclerView.Adapter<*>, position: Int): Boolean
+data class Link(val title: String, val fragment: Fragment) : DiffKey {
+
+    override val diffKey: String = title
 }

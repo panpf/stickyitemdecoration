@@ -8,9 +8,9 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:${property("BUILD")}")
+        classpath("com.android.tools.build:gradle:${property("ANDROID_GRADLE")}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${property("KOTLIN")}")
-        classpath("com.vanniktech:gradle-maven-publish-plugin:0.15.1")
+        classpath("io.github.panpf.maven-publish:maven-publish-gradle-plugin:${property("MAVEN_PUBLISH")}")
     }
 }
 

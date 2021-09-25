@@ -13,10 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.recycler.sticky
+package com.github.panpf.recycler.sticky.sample.bean
 
-import androidx.recyclerview.widget.RecyclerView
+import android.os.Parcelable
+import com.github.panpf.assemblyadapter.recycler.DiffKey
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
-fun interface StickyItemJudge {
-    fun isStickyItemByPosition(adapter: RecyclerView.Adapter<*>, position: Int): Boolean
+@Parcelize
+data class ListSeparator(val title: String) : DiffKey, Parcelable {
+
+    @IgnoredOnParcel
+    override val diffKey: String = title
 }
