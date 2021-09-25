@@ -20,7 +20,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecoration
+import com.github.panpf.recycler.sticky.addStickyItemDecorationWithItemType
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.recycler.sticky.sample.item.AppListAdapter
@@ -41,9 +41,7 @@ class NormalItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
         binding.recyclerRecycler.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(requireContext())
-            addAssemblyStickyItemDecoration(binding.recyclerStickyContainer) {
-                itemType(1)
-            }
+            addStickyItemDecorationWithItemType(1)
         }
 
         viewModel.pinyinFlatAppListData.observe(viewLifecycleOwner) {

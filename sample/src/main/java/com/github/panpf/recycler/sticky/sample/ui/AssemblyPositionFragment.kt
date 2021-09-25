@@ -21,7 +21,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
-import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecoration
+import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithPosition
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
@@ -62,9 +62,9 @@ class AssemblyPositionFragment : BaseBindingFragment<FragmentRecyclerBinding>() 
                     listSeparatorPositionList.add(index)
                 }
             }
-            binding.recyclerRecycler.addAssemblyStickyItemDecoration(binding.recyclerStickyContainer) {
-                position(listSeparatorPositionList)
-            }
+            binding.recyclerRecycler.addAssemblyStickyItemDecorationWithPosition(
+                listSeparatorPositionList
+            )
             recyclerAdapter.submitList(dataList)
         }
     }

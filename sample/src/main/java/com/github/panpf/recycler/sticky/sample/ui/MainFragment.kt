@@ -15,15 +15,17 @@ import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     private val links = listOf(
-        ListSeparator("Normal"),
-        Link("Normal - Position", NormalPositionFragment()),
-        Link("Normal - ItemType", NormalItemTypeFragment()),
+        ListSeparator("Simple"),
+        Link("Simple - Position", NormalPositionFragment()),
+        Link("Simple - ItemType", NormalItemTypeFragment()),
 
         ListSeparator("Assembly"),
         Link("Assembly - Position", AssemblyPositionFragment()),
         Link("Assembly - ItemType", AssemblyItemTypeFragment()),
         Link("Assembly - ItemFactory", AssemblyItemFactoryFragment()),
     )
+
+    // todo container 示例
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?

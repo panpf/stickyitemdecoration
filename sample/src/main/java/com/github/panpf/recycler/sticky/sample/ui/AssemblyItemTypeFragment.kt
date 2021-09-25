@@ -22,6 +22,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecoration
+import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithItemType
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.recycler.sticky.sample.item.AppItemFactory
@@ -50,9 +51,7 @@ class AssemblyItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() 
         binding.recyclerRecycler.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(requireContext())
-            addAssemblyStickyItemDecoration(binding.recyclerStickyContainer) {
-                itemType(1)
-            }
+            addAssemblyStickyItemDecorationWithItemType(1)
         }
 
         viewModel.pinyinFlatAppListData.observe(viewLifecycleOwner) {

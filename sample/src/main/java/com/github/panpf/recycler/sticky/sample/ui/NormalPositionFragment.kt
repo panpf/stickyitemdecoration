@@ -20,7 +20,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecoration
+import com.github.panpf.recycler.sticky.addStickyItemDecorationWithPosition
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
@@ -53,9 +53,9 @@ class NormalPositionFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
                     listSeparatorPositionList.add(index)
                 }
             }
-            binding.recyclerRecycler.addAssemblyStickyItemDecoration(binding.recyclerStickyContainer) {
-                position(listSeparatorPositionList)
-            }
+            binding.recyclerRecycler.addStickyItemDecorationWithPosition(
+                listSeparatorPositionList
+            )
             recyclerAdapter.submitList(dataList)
         }
     }

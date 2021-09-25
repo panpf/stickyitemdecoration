@@ -6,124 +6,118 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.assemblyadapter.AssemblyAdapter
 import com.github.panpf.assemblyadapter.ItemFactory
 import com.github.panpf.assemblyadapter.recycler.ConcatAdapterLocalHelper
-import com.github.panpf.recycler.sticky.StickyItemJudge
-import com.github.panpf.recycler.sticky.StickyItemDecoration
+import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
 import kotlin.reflect.KClass
 
-class AssemblyStickyItemDecoration(
-    stickyItemContainer: ViewGroup,
-    positionArray: SparseBooleanArray?,
-    itemTypeArray: SparseBooleanArray?,
-    stickyItemFactoryList: List<KClass<out ItemFactory<out Any>>>?,
-) : StickyItemDecoration(
-    AssemblyStickyItemJudge(positionArray, itemTypeArray, stickyItemFactoryList?.map { it.java }),
-    stickyItemContainer
-) {
+class AssemblyStickyItemDecoration private constructor(
+    stickyItemPositionList: List<Int>? = null,
+    stickyItemTypeList: List<Int>? = null,
+    stickyItemFactoryKClassList: List<KClass<out ItemFactory<out Any>>>?,
+    stickyItemContainer: ViewGroup? = null,
+) : BaseStickyItemDecoration(stickyItemContainer) {
 
-    constructor(
-        stickyItemContainer: ViewGroup,
-        stickyItemFactoryList: List<KClass<out ItemFactory<out Any>>>
-    ) : this(stickyItemContainer, null, null, stickyItemFactoryList)
+    private val positionArray: SparseBooleanArray? =
+        if (stickyItemPositionList?.isNotEmpty() == true) {
+            SparseBooleanArray().apply {
+                stickyItemPositionList.forEach { position -> put(position, true) }
+            }
+        } else {
+            null
+        }
+    private val itemTypeArray: SparseBooleanArray? = if (stickyItemTypeList?.isNotEmpty() == true) {
+        SparseBooleanArray().apply {
+            stickyItemTypeList.forEach { itemType -> put(itemType, true) }
+        }
+    } else {
+        null
+    }
+    private val itemFactoryClassList: List<Class<out ItemFactory<out Any>>>? =
+        stickyItemFactoryKClassList?.takeIf { it.isNotEmpty() }?.map { it.java }
+    private val concatAdapterLocalHelper = ConcatAdapterLocalHelper()
 
-    constructor(
-        stickyItemContainer: ViewGroup,
-        vararg itemFactoryClass: KClass<out ItemFactory<out Any>>
-    ) : this(stickyItemContainer, null, null, itemFactoryClass.toList())
+    override fun isStickyItemByPosition(
+        adapter: RecyclerView.Adapter<*>,
+        position: Int
+    ): Boolean {
+        if (positionArray?.get(position) == true) {
+            return true
+        }
 
-    class Builder(private val stickyItemContainer: ViewGroup) {
+        var localAdapter: RecyclerView.Adapter<*>? = null
+        var localPosition: Int? = null
+        if (itemTypeArray != null || itemFactoryClassList != null) {
+            val local = concatAdapterLocalHelper.findLocalAdapterAndPosition(adapter, position)
+            localAdapter = local.first
+            localPosition = local.second
+        }
+        if (itemTypeArray?.get(localAdapter!!.getItemViewType(localPosition!!)) == true) {
+            return true
+        }
 
-        private var stickyItemFactoryList: List<KClass<out ItemFactory<out Any>>>? = null
-        private val itemTypeArray = SparseBooleanArray()
-        private val positionArray = SparseBooleanArray()
+        if (itemFactoryClassList != null) {
+            val adapter1 = localAdapter!!
+            val itemFactoryClass: Class<*>? = if (adapter1 is AssemblyAdapter<*, *>) {
+                adapter1.getItemFactoryByPosition(localPosition!!).javaClass
+            } else {
+                null
+            }
+            if (itemFactoryClass != null && itemFactoryClassList.contains(itemFactoryClass)) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    class Builder {
+
+        private var stickyItemPositionList: List<Int>? = null
+        private var stickyItemTypeList: List<Int>? = null
+        private var stickyItemFactoryKClassList: List<KClass<out ItemFactory<out Any>>>? = null
+        private var stickyItemContainer: ViewGroup? = null
 
         fun position(vararg positions: Int): Builder {
-            positions.forEach { position ->
-                positionArray.put(position, true)
-            }
+            this.stickyItemPositionList = positions.toList()
             return this
         }
 
         fun position(positions: List<Int>): Builder {
-            positions.forEach { position ->
-                positionArray.put(position, true)
-            }
+            this.stickyItemPositionList = positions
             return this
         }
 
         fun itemType(vararg itemTypes: Int): Builder {
-            itemTypes.forEach { itemType ->
-                itemTypeArray.put(itemType, true)
-            }
+            this.stickyItemTypeList = itemTypes.toList()
             return this
         }
 
         fun itemType(itemTypes: List<Int>): Builder {
-            itemTypes.forEach { itemType ->
-                itemTypeArray.put(itemType, true)
-            }
+            this.stickyItemTypeList = itemTypes
             return this
         }
 
         fun itemFactory(vararg itemFactory: KClass<out ItemFactory<out Any>>): Builder {
-            this.stickyItemFactoryList = itemFactory.toList()
+            this.stickyItemFactoryKClassList = itemFactory.toList()
             return this
         }
 
         fun itemFactory(itemFactoryList: List<KClass<out ItemFactory<out Any>>>): Builder {
-            this.stickyItemFactoryList = itemFactoryList
+            this.stickyItemFactoryKClassList = itemFactoryList
+            return this
+        }
+
+        fun showInContainer(stickyItemContainer: ViewGroup): Builder {
+            this.stickyItemContainer = stickyItemContainer
             return this
         }
 
         fun build(): AssemblyStickyItemDecoration {
             return AssemblyStickyItemDecoration(
+                stickyItemPositionList,
+                stickyItemTypeList,
+                stickyItemFactoryKClassList,
                 stickyItemContainer,
-                if (positionArray.size() > 0) positionArray else null,
-                if (itemTypeArray.size() > 0) itemTypeArray else null,
-                if (stickyItemFactoryList?.isNotEmpty() == true) stickyItemFactoryList else null,
             )
-        }
-    }
-
-    private class AssemblyStickyItemJudge(
-        private val positionArray: SparseBooleanArray?,
-        private val itemTypeArray: SparseBooleanArray?,
-        private val stickyItemFactoryList: List<Class<out ItemFactory<out Any>>>?,
-    ) : StickyItemJudge {
-
-        private val concatAdapterLocalHelper = ConcatAdapterLocalHelper()
-
-        override fun isStickyItemByPosition(
-            adapter: RecyclerView.Adapter<*>,
-            position: Int
-        ): Boolean {
-            if (positionArray?.get(position) == true) {
-                return true
-            }
-
-            var localAdapter: RecyclerView.Adapter<*>? = null
-            var localPosition: Int? = null
-            if (itemTypeArray != null || stickyItemFactoryList != null) {
-                val local = concatAdapterLocalHelper.findLocalAdapterAndPosition(adapter, position)
-                localAdapter = local.first
-                localPosition = local.second
-            }
-            if (itemTypeArray?.get(localAdapter!!.getItemViewType(localPosition!!)) == true) {
-                return true
-            }
-
-            if (stickyItemFactoryList != null) {
-                val adapter1 = localAdapter!!
-                val itemFactoryClass: Class<*>? = if (adapter1 is AssemblyAdapter<*, *>) {
-                    adapter1.getItemFactoryByPosition(localPosition!!).javaClass
-                } else {
-                    null
-                }
-                if (itemFactoryClass != null && stickyItemFactoryList.contains(itemFactoryClass)) {
-                    return true
-                }
-            }
-
-            return false
         }
     }
 }
