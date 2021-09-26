@@ -46,8 +46,6 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
             "Assembly - Clickable",
             AssemblyItemFactoryFragment.create(stickyItemClickable = true)
         ),
-
-        ListSeparator("Clickable"),
     )
 
     override fun createViewBinding(
