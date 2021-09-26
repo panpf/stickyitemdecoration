@@ -18,28 +18,25 @@ abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: BaseStic
         reset()
     }
 
-    protected var stickyItemPosition: Int? = null
-    protected var stickyItemView: View? = null
-    protected var stickyItemViewOffset: Int? = null
     private var invisibleItemView: View? = null
     private var cacheInto: IntArray? = null
 
     /**
      * 禁止滑动过程中下一个 sticky header 往上顶当前 sticky header 的效果
      */
-    var disabledScrollStickyHeader = false
+    var disabledScrollUpStickyItem = false
         set(value) {
             field = value
-            stickyItemViewOffset = null
+            reset()
         }
 
     /**
      * 滑动过程中 sticky header 显示时隐藏列表中的 sticky item
      */
-    var invisibleStickyItemInList = false
+    var invisibleOriginItemWhenStickyItemShowing = false
         set(value) {
             field = value
-            invisibleItemView = null
+            reset()
         }
 
     abstract fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State)
@@ -49,11 +46,11 @@ abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: BaseStic
      */
     protected fun hiddenOriginItemView(
         parent: RecyclerView,
-        firstVisibleItemPosition: Int
+        firstVisibleItemPosition: Int,
+        stickyItemPosition: Int?
     ) {
-        if (!invisibleStickyItemInList) return
+        if (!invisibleOriginItemWhenStickyItemShowing) return
 
-        val stickyItemPosition = stickyItemPosition
         if (stickyItemPosition != null && stickyItemPosition == firstVisibleItemPosition) {
             val originStickyItemView = parent.layoutManager?.findViewByPosition(stickyItemPosition)
             // stickyItemView.getTop() == 0 时隐藏 stickyItemView 会导致 sticky header 区域闪烁一下，这是因为在 sticky header 显示出来之前隐藏了 stickyItemView
@@ -155,8 +152,6 @@ abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: BaseStic
         }
 
     protected open fun reset() {
-        stickyItemPosition = null
-        stickyItemView = null
         viewHolderCachePool.clear()
         val invisibleItemView = this.invisibleItemView
         if (invisibleItemView != null) {

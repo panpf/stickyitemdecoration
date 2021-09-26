@@ -18,17 +18,34 @@ package com.github.panpf.recycler.sticky.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
 import com.github.panpf.recycler.sticky.addStickyItemDecorationWithItemType
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.recycler.sticky.sample.item.AppListAdapter
+import com.github.panpf.recycler.sticky.sample.vm.MenuViewModel
 import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
 
 class NormalItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
+    companion object {
+        fun create(stickyItemClickable: Boolean = false): NormalPositionFragment =
+            NormalPositionFragment().apply {
+                arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
+            }
+    }
+
     private val viewModel by viewModels<PinyinFlatAppsViewModel>()
+    private val menuViewModel by activityViewModels<MenuViewModel>()
+
+    private var disabledScrollUpStickyItem = false
+    private var invisibleOriginItemWhenStickyItemShowing = false
+
+    private val stickyItemClickable by lazy { arguments?.getBoolean("stickyItemClickable") ?: false }
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?
@@ -41,12 +58,55 @@ class NormalItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
         binding.recyclerRecycler.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(requireContext())
-            addStickyItemDecorationWithItemType(1)
+            addStickyItemDecorationWithItemType(1) {
+                if (stickyItemClickable) {
+                    showInContainer(binding.recyclerStickyContainer)
+                }
+            }
         }
 
         viewModel.pinyinFlatAppListData.observe(viewLifecycleOwner) {
             val dataList = listOf(viewModel.appsOverviewData.value!!).plus(it ?: emptyList())
             recyclerAdapter.submitList(dataList)
         }
+
+        menuViewModel.menuClickEvent.listen(viewLifecycleOwner) {
+            when (it?.id) {
+                1 -> {
+                    disabledScrollUpStickyItem = !disabledScrollUpStickyItem
+                    binding.recyclerRecycler.apply {
+                        (getItemDecorationAt(0) as BaseStickyItemDecoration)
+                            .disabledScrollUpStickyItem = disabledScrollUpStickyItem
+                        postInvalidate()
+                    }
+                    menuViewModel.menuInfoListData.postValue(buildMenuInfoList())
+                }
+                2 -> {
+                    invisibleOriginItemWhenStickyItemShowing =
+                        !invisibleOriginItemWhenStickyItemShowing
+                    binding.recyclerRecycler.apply {
+                        (getItemDecorationAt(0) as BaseStickyItemDecoration)
+                            .invisibleOriginItemWhenStickyItemShowing =
+                            invisibleOriginItemWhenStickyItemShowing
+                        postInvalidate()
+                    }
+                    menuViewModel.menuInfoListData.postValue(buildMenuInfoList())
+                }
+            }
+        }
+        menuViewModel.menuInfoListData.postValue(buildMenuInfoList())
+    }
+
+    private fun buildMenuInfoList(): List<MenuViewModel.MenuInfo> {
+        return listOf(
+            MenuViewModel.MenuInfo(
+                1,
+                if (disabledScrollUpStickyItem) "EnableScrollStickyItem" else "DisableScrollStickyItem"
+            ),
+            MenuViewModel.MenuInfo(
+                2,
+                if (invisibleOriginItemWhenStickyItemShowing) "ShowOriginStickyItem" else "HiddenOriginStickyItem"
+            ),
+        )
     }
 }

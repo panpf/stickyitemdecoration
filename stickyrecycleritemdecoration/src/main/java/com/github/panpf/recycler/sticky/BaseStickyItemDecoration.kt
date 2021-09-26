@@ -26,28 +26,27 @@ abstract class BaseStickyItemDecoration(
     stickyItemContainer: ViewGroup?
 ) : RecyclerView.ItemDecoration() {
 
+    companion object {
+        var debugMode = true
+    }
+
+    @Suppress("LeakingThis")
     private val sticky = if (stickyItemContainer != null) {
         ContainerStickyItemDraw(this, stickyItemContainer)
     } else {
         StickyItemDraw(this)
     }
 
-    /**
-     * 禁止滑动过程中下一个 sticky header 往上顶当前 sticky header 的效果
-     */
-    var disabledScrollStickyHeader
-        get() = sticky.disabledScrollStickyHeader
+    var disabledScrollUpStickyItem
+        get() = sticky.disabledScrollUpStickyItem
         set(value) {
-            sticky.disabledScrollStickyHeader = value
+            sticky.disabledScrollUpStickyItem = value
         }
 
-    /**
-     * 滑动过程中 sticky header 显示时隐藏列表中的 sticky item
-     */
-    var invisibleStickyItemInList
-        get() = sticky.invisibleStickyItemInList
+    var invisibleOriginItemWhenStickyItemShowing
+        get() = sticky.invisibleOriginItemWhenStickyItemShowing
         set(value) {
-            sticky.invisibleStickyItemInList = value
+            sticky.invisibleOriginItemWhenStickyItemShowing = value
         }
 
     override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {

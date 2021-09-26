@@ -5,7 +5,8 @@ import com.github.panpf.assemblyadapter.ItemFactory
 import kotlin.reflect.KClass
 
 fun RecyclerView.addAssemblyStickyItemDecorationWithPosition(
-    positionList: List<Int>
+    positionList: List<Int>,
+    config: (AssemblyStickyItemDecoration.Builder.() -> Unit)? = null
 ) {
     addItemDecoration(
         AssemblyStickyItemDecoration.Builder().apply {
@@ -15,51 +16,61 @@ fun RecyclerView.addAssemblyStickyItemDecorationWithPosition(
 }
 
 fun RecyclerView.addAssemblyStickyItemDecorationWithPosition(
-    vararg positionArray: Int
+    vararg positionArray: Int,
+    config: (AssemblyStickyItemDecoration.Builder.() -> Unit)? = null
 ) {
     addItemDecoration(
         AssemblyStickyItemDecoration.Builder().apply {
             position(positionArray.toList())
+            config?.invoke(this)
         }.build()
     )
 }
 
 fun RecyclerView.addAssemblyStickyItemDecorationWithItemType(
-    itemTypeList: List<Int>
+    itemTypeList: List<Int>,
+    config: (AssemblyStickyItemDecoration.Builder.() -> Unit)? = null
 ) {
     addItemDecoration(
         AssemblyStickyItemDecoration.Builder().apply {
             itemType(itemTypeList)
+            config?.invoke(this)
         }.build()
     )
 }
 
 fun RecyclerView.addAssemblyStickyItemDecorationWithItemType(
-    vararg itemTypeArray: Int
+    vararg itemTypeArray: Int,
+    config: (AssemblyStickyItemDecoration.Builder.() -> Unit)? = null
 ) {
     addItemDecoration(
         AssemblyStickyItemDecoration.Builder().apply {
             itemType(itemTypeArray.toList())
+            config?.invoke(this)
         }.build()
     )
 }
 
 fun RecyclerView.addAssemblyStickyItemDecorationWithItemFactory(
-    itemFactoryClassList: List<KClass<out ItemFactory<out Any>>>
+    itemFactoryClassList: List<KClass<out ItemFactory<out Any>>>,
+    config: (AssemblyStickyItemDecoration.Builder.() -> Unit)? = null
 ) {
     addItemDecoration(
         AssemblyStickyItemDecoration.Builder().apply {
             itemFactory(itemFactoryClassList)
+            config?.invoke(this)
         }.build()
     )
 }
 
 fun RecyclerView.addAssemblyStickyItemDecorationWithItemFactory(
-    vararg itemFactoryClassArray: KClass<out ItemFactory<out Any>>
+    vararg itemFactoryClassArray: KClass<out ItemFactory<out Any>>,
+    config: (AssemblyStickyItemDecoration.Builder.() -> Unit)? = null
 ) {
     addItemDecoration(
         AssemblyStickyItemDecoration.Builder().apply {
             itemFactory(itemFactoryClassArray.toList())
+            config?.invoke(this)
         }.build()
     )
 }

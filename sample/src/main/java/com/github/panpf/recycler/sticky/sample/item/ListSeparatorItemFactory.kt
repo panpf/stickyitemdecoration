@@ -18,11 +18,13 @@ package com.github.panpf.recycler.sticky.sample.item
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
 import com.github.panpf.recycler.sticky.sample.databinding.ItemListSeparatorBinding
 
-open class ListSeparatorItemFactory
+open class ListSeparatorItemFactory(val hiddenTapMe: Boolean = false)
     : BindingItemFactory<ListSeparator, ItemListSeparatorBinding>(ListSeparator::class) {
 
     override fun createItemViewBinding(
@@ -36,6 +38,12 @@ open class ListSeparatorItemFactory
         binding: ItemListSeparatorBinding,
         item: BindingItem<ListSeparator, ItemListSeparatorBinding>
     ) {
+        binding.listSeparatorItemActionText.apply {
+            setOnClickListener {
+                Toast.makeText(context, "Lighter", Toast.LENGTH_LONG).show()
+            }
+            isVisible = !hiddenTapMe
+        }
     }
 
     override fun bindItemData(
