@@ -171,4 +171,13 @@ abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: BaseStic
             }
         }
     }
+
+    protected fun isVertical(parent: RecyclerView): Boolean {
+        return when (val layoutManager = parent.layoutManager) {
+            is LinearLayoutManager -> layoutManager.orientation == LinearLayoutManager.VERTICAL
+            is GridLayoutManager -> layoutManager.orientation == GridLayoutManager.VERTICAL
+            is StaggeredGridLayoutManager -> layoutManager.orientation == StaggeredGridLayoutManager.VERTICAL
+            else -> true
+        }
+    }
 }

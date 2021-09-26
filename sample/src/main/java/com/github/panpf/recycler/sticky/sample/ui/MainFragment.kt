@@ -15,18 +15,14 @@ import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     private val links = listOf(
-        ListSeparator("Simple"),
+        ListSeparator("Normal"),
         Link(
-            "Simple - Position",
+            "Normal - Position",
             NormalPositionFragment.create(stickyItemClickable = false)
         ),
         Link(
-            "Simple - ItemType",
+            "Normal - ItemType",
             NormalItemTypeFragment.create(stickyItemClickable = false)
-        ),
-        Link(
-            "Simple - Clickable",
-            NormalItemTypeFragment.create(stickyItemClickable = true)
         ),
 
         ListSeparator("Assembly"),
@@ -42,9 +38,25 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
             "Assembly - ItemFactory",
             AssemblyItemFactoryFragment.create(stickyItemClickable = false)
         ),
+
+        ListSeparator("Clickable"),
         Link(
-            "Assembly - Clickable",
+            "Clickable - Simple",
+            NormalItemTypeFragment.create(stickyItemClickable = true)
+        ),
+        Link(
+            "Clickable - Assembly",
             AssemblyItemFactoryFragment.create(stickyItemClickable = true)
+        ),
+
+        ListSeparator("Horizontal"),
+        Link(
+            "Horizontal",
+            NormalItemTypeFragment.create(stickyItemClickable = false, horizontal = true)
+        ),
+        Link(
+            "Horizontal - Clickable",
+            NormalItemTypeFragment.create(stickyItemClickable = true, horizontal = true)
         ),
     )
 

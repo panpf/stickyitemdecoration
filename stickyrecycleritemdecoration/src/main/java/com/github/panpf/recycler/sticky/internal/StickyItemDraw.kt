@@ -4,7 +4,10 @@ import android.graphics.Canvas
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
 
 class StickyItemDraw(baseStickyItemDecoration: BaseStickyItemDecoration) :
@@ -32,7 +35,7 @@ class StickyItemDraw(baseStickyItemDecoration: BaseStickyItemDecoration) :
                 )
             logBuilder?.append(". Offset=${stickyItemViewOffset ?: 0}")
 
-            showStickyItemView(canvas, stickyItemView, stickyItemViewOffset)
+            showStickyItemView(canvas, parent, stickyItemView, stickyItemViewOffset)
         } else {
             lastStickyItemPosition = null
             lastStickyItemView = null
@@ -63,13 +66,17 @@ class StickyItemDraw(baseStickyItemDecoration: BaseStickyItemDecoration) :
             val stickyItemView = stickyItemViewHolder.itemView.apply {
                 val itemLayoutParams = layoutParams
                 val itemWidthMeasureSpec = ViewGroup.getChildMeasureSpec(
-                    View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(
+                        parent.width,
+                        if (isVertical(parent)) View.MeasureSpec.EXACTLY else View.MeasureSpec.UNSPECIFIED
+                    ),
                     parent.paddingLeft + parent.paddingRight,
                     itemLayoutParams.width
                 )
                 val itemHeightMeasureSpec = ViewGroup.getChildMeasureSpec(
                     View.MeasureSpec.makeMeasureSpec(
-                        parent.height, View.MeasureSpec.UNSPECIFIED
+                        parent.height,
+                        if (isVertical(parent)) View.MeasureSpec.UNSPECIFIED else View.MeasureSpec.EXACTLY
                     ),
                     parent.paddingTop + parent.paddingBottom,
                     itemLayoutParams.height
@@ -117,23 +124,38 @@ class StickyItemDraw(baseStickyItemDecoration: BaseStickyItemDecoration) :
             return null
         }
 
-        val nextStickyViewTop = nextStickyItemView.top
-        val stickyItemViewHeight = stickyItemView.height
-        return if (nextStickyViewTop in 0..stickyItemViewHeight) {
-            nextStickyViewTop - stickyItemViewHeight
+        if (isVertical(parent)) {
+            val nextStickyViewTop = nextStickyItemView.top
+            val stickyItemViewHeight = stickyItemView.height
+            return if (nextStickyViewTop in 0..stickyItemViewHeight) {
+                nextStickyViewTop - stickyItemViewHeight
+            } else {
+                null
+            }
         } else {
-            null
+            val nextStickyViewLeft = nextStickyItemView.left
+            val stickyItemViewWidth = stickyItemView.width
+            return if (nextStickyViewLeft in 0..stickyItemViewWidth) {
+                nextStickyViewLeft - stickyItemViewWidth
+            } else {
+                null
+            }
         }
     }
 
     private fun showStickyItemView(
         canvas: Canvas,
+        parent: RecyclerView,
         stickyItemView: View,
         stickyItemViewOffset: Int?,
     ) {
         canvas.save()
         if (stickyItemViewOffset != null) {
-            canvas.translate(0f, stickyItemViewOffset.toFloat())
+            if (isVertical(parent)) {
+                canvas.translate(0f, stickyItemViewOffset.toFloat())
+            } else {
+                canvas.translate(stickyItemViewOffset.toFloat(), 0f)
+            }
         }
         stickyItemView.draw(canvas)
         canvas.restore()

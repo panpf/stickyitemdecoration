@@ -36,10 +36,14 @@ import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
 class AssemblyItemFactoryFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     companion object {
-        fun create(stickyItemClickable: Boolean = false): NormalPositionFragment =
-            NormalPositionFragment().apply {
+        fun create(stickyItemClickable: Boolean = false): AssemblyItemFactoryFragment =
+            AssemblyItemFactoryFragment().apply {
                 arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
             }
+    }
+
+    private val stickyItemClickable by lazy {
+        arguments?.getBoolean("stickyItemClickable") ?: false
     }
 
     private val viewModel by viewModels<PinyinFlatAppsViewModel>()
@@ -47,8 +51,6 @@ class AssemblyItemFactoryFragment : BaseBindingFragment<FragmentRecyclerBinding>
 
     private var disabledScrollUpStickyItem = false
     private var invisibleOriginItemWhenStickyItemShowing = false
-
-    private val stickyItemClickable by lazy { arguments?.getBoolean("stickyItemClickable") ?: false }
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?

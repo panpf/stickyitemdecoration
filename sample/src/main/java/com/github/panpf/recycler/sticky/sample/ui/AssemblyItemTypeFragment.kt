@@ -24,7 +24,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
-import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecoration
 import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithItemType
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
@@ -37,10 +36,14 @@ import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
 class AssemblyItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     companion object {
-        fun create(stickyItemClickable: Boolean = false): NormalPositionFragment =
-            NormalPositionFragment().apply {
+        fun create(stickyItemClickable: Boolean = false): AssemblyItemTypeFragment =
+            AssemblyItemTypeFragment().apply {
                 arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
             }
+    }
+
+    private val stickyItemClickable by lazy {
+        arguments?.getBoolean("stickyItemClickable") ?: false
     }
 
     private val viewModel by viewModels<PinyinFlatAppsViewModel>()
@@ -48,8 +51,6 @@ class AssemblyItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() 
 
     private var disabledScrollUpStickyItem = false
     private var invisibleOriginItemWhenStickyItemShowing = false
-
-    private val stickyItemClickable by lazy { arguments?.getBoolean("stickyItemClickable") ?: false }
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?

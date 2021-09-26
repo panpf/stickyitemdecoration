@@ -19,6 +19,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,7 @@ import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
 import com.github.panpf.recycler.sticky.addStickyItemDecorationWithItemType
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
+import com.github.panpf.recycler.sticky.sample.item.AppHorizontalListAdapter
 import com.github.panpf.recycler.sticky.sample.item.AppListAdapter
 import com.github.panpf.recycler.sticky.sample.vm.MenuViewModel
 import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
@@ -33,19 +35,27 @@ import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
 class NormalItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     companion object {
-        fun create(stickyItemClickable: Boolean = false): NormalPositionFragment =
-            NormalPositionFragment().apply {
-                arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
-            }
+        fun create(
+            stickyItemClickable: Boolean = false,
+            horizontal: Boolean = false
+        ): NormalItemTypeFragment = NormalItemTypeFragment().apply {
+            arguments = bundleOf(
+                "stickyItemClickable" to stickyItemClickable,
+                "horizontal" to horizontal
+            )
+        }
     }
+
+    private val stickyItemClickable by lazy {
+        arguments?.getBoolean("stickyItemClickable") ?: false
+    }
+    private val horizontal by lazy { arguments?.getBoolean("horizontal") ?: false }
 
     private val viewModel by viewModels<PinyinFlatAppsViewModel>()
     private val menuViewModel by activityViewModels<MenuViewModel>()
 
     private var disabledScrollUpStickyItem = false
     private var invisibleOriginItemWhenStickyItemShowing = false
-
-    private val stickyItemClickable by lazy { arguments?.getBoolean("stickyItemClickable") ?: false }
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?
@@ -54,10 +64,20 @@ class NormalItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
     }
 
     override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
-        val recyclerAdapter = AppListAdapter()
+        if (horizontal) {
+            binding.recyclerStickyContainer.updateLayoutParams<ViewGroup.LayoutParams> {
+                width = ViewGroup.LayoutParams.WRAP_CONTENT
+                height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+        }
+
         binding.recyclerRecycler.apply {
-            adapter = recyclerAdapter
-            layoutManager = LinearLayoutManager(requireContext())
+            adapter = if (horizontal) AppHorizontalListAdapter() else AppListAdapter()
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                if (horizontal) LinearLayoutManager.HORIZONTAL else LinearLayoutManager.VERTICAL,
+                false
+            )
             addStickyItemDecorationWithItemType(1) {
                 if (stickyItemClickable) {
                     showInContainer(binding.recyclerStickyContainer)
@@ -67,7 +87,11 @@ class NormalItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
         viewModel.pinyinFlatAppListData.observe(viewLifecycleOwner) {
             val dataList = listOf(viewModel.appsOverviewData.value!!).plus(it ?: emptyList())
-            recyclerAdapter.submitList(dataList)
+            if (horizontal) {
+                (binding.recyclerRecycler.adapter!! as AppHorizontalListAdapter).submitList(dataList)
+            } else {
+                (binding.recyclerRecycler.adapter!! as AppListAdapter).submitList(dataList)
+            }
         }
 
         menuViewModel.menuClickEvent.listen(viewLifecycleOwner) {

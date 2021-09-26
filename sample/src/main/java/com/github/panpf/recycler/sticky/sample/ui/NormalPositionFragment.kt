@@ -40,15 +40,15 @@ class NormalPositionFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             }
     }
 
+    private val stickyItemClickable by lazy {
+        arguments?.getBoolean("stickyItemClickable") ?: false
+    }
+
     private val viewModel by viewModels<PinyinFlatAppsViewModel>()
     private val menuViewModel by activityViewModels<MenuViewModel>()
 
     private var disabledScrollUpStickyItem = false
     private var invisibleOriginItemWhenStickyItemShowing = false
-
-    private val stickyItemClickable by lazy {
-        arguments?.getBoolean("stickyItemClickable") ?: false
-    }
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?

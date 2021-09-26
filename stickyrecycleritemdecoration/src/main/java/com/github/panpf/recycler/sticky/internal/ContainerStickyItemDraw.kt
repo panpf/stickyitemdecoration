@@ -112,17 +112,30 @@ class ContainerStickyItemDraw(
             return
         }
 
-        val nextStickyViewTop = nextStickyItemView.top
-        val stickyContainerHeight = stickyItemContainer.height
-        val stickyItemViewOffset = if (nextStickyViewTop in 0..stickyContainerHeight) {
-            nextStickyViewTop - stickyContainerHeight
+        if (isVertical(parent)) {
+            val nextStickyViewTop = nextStickyItemView.top
+            val stickyContainerHeight = stickyItemContainer.height
+            val stickyItemViewOffset = if (nextStickyViewTop in 0..stickyContainerHeight) {
+                nextStickyViewTop - stickyContainerHeight
+            } else {
+                0
+            }
+            ViewCompat.offsetTopAndBottom(stickyItemView, stickyItemViewOffset - stickyItemView.top)
+            logBuilder?.append(". Offset=${stickyItemViewOffset}")
         } else {
-            0
+            val nextStickyViewLeft = nextStickyItemView.left
+            val stickyContainerWidth = stickyItemContainer.width
+            val stickyItemViewOffset = if (nextStickyViewLeft in 0..stickyContainerWidth) {
+                nextStickyViewLeft - stickyContainerWidth
+            } else {
+                0
+            }
+            ViewCompat.offsetLeftAndRight(
+                stickyItemView,
+                stickyItemViewOffset - stickyItemView.left
+            )
+            logBuilder?.append(". Offset=${stickyItemViewOffset}")
         }
-        val oldStickyViewTop = stickyItemView.top
-        ViewCompat.offsetTopAndBottom(stickyItemView, stickyItemViewOffset - oldStickyViewTop)
-
-        logBuilder?.append(". Offset=${stickyItemViewOffset}")
     }
 
     override fun reset() {
