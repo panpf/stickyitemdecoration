@@ -18,6 +18,7 @@ package com.github.panpf.recycler.sticky.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
@@ -31,7 +32,16 @@ import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
 
 class AssemblyItemFactoryFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
+    companion object {
+        fun create(stickyItemClickable: Boolean = false): NormalPositionFragment =
+            NormalPositionFragment().apply {
+                arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
+            }
+    }
+
     private val viewModel by viewModels<PinyinFlatAppsViewModel>()
+
+    private val stickyItemClickable by lazy { arguments?.getBoolean("stickyItemClickable") ?: false }
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?
@@ -50,7 +60,11 @@ class AssemblyItemFactoryFragment : BaseBindingFragment<FragmentRecyclerBinding>
         binding.recyclerRecycler.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(requireContext())
-            addAssemblyStickyItemDecorationWithItemFactory(ListSeparatorItemFactory::class)
+            addAssemblyStickyItemDecorationWithItemFactory(ListSeparatorItemFactory::class) {
+                if (stickyItemClickable) {
+                    showInContainer(binding.recyclerStickyContainer)
+                }
+            }
         }
 
         viewModel.pinyinFlatAppListData.observe(viewLifecycleOwner) {

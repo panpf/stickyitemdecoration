@@ -16,16 +16,39 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     private val links = listOf(
         ListSeparator("Simple"),
-        Link("Simple - Position", NormalPositionFragment()),
-        Link("Simple - ItemType", NormalItemTypeFragment()),
+        Link(
+            "Simple - Position",
+            NormalPositionFragment.create(stickyItemClickable = false)
+        ),
+        Link(
+            "Simple - ItemType",
+            NormalItemTypeFragment.create(stickyItemClickable = false)
+        ),
+        Link(
+            "Simple - Clickable",
+            NormalItemTypeFragment.create(stickyItemClickable = true)
+        ),
 
         ListSeparator("Assembly"),
-        Link("Assembly - Position", AssemblyPositionFragment()),
-        Link("Assembly - ItemType", AssemblyItemTypeFragment()),
-        Link("Assembly - ItemFactory", AssemblyItemFactoryFragment()),
-    )
+        Link(
+            "Assembly - Position",
+            AssemblyPositionFragment.create(stickyItemClickable = false)
+        ),
+        Link(
+            "Assembly - ItemType",
+            AssemblyItemTypeFragment.create(stickyItemClickable = false)
+        ),
+        Link(
+            "Assembly - ItemFactory",
+            AssemblyItemFactoryFragment.create(stickyItemClickable = false)
+        ),
+        Link(
+            "Assembly - Clickable",
+            AssemblyItemFactoryFragment.create(stickyItemClickable = true)
+        ),
 
-    // todo container 示例
+        ListSeparator("Clickable"),
+    )
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?
@@ -37,7 +60,7 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
             adapter = AssemblyRecyclerAdapter(
                 listOf(
                     LinkItemFactory(),
-                    ListSeparatorItemFactory()
+                    ListSeparatorItemFactory(hiddenTapMe = true)
                 ),
                 links
             )

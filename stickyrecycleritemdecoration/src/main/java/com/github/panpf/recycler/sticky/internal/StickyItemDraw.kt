@@ -7,51 +7,61 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
 
-class StickyItemDraw(baseStickyItemDecoration: BaseStickyItemDecoration) :
+open class StickyItemDraw(baseStickyItemDecoration: BaseStickyItemDecoration) :
     BaseStickyItemDraw(baseStickyItemDecoration) {
+
+    private var lastStickyItemPosition: Int? = null
+    private var lastStickyItemView: View? = null
 
     override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         val adapter = getAdapter(parent)?.takeIf { it.itemCount > 0 } ?: return
         val firstVisibleItemPosition = findFirstVisibleItemPosition(parent) ?: return
 
-        val logBuilder: StringBuilder? = StringBuilder()
-        logBuilder?.append("firstVisibleItemPosition: $firstVisibleItemPosition")
+        val logBuilder: StringBuilder? =
+            if (BaseStickyItemDecoration.debugMode) StringBuilder() else null
+        logBuilder?.append("onDraw. FirstItem: $firstVisibleItemPosition")
 
-        prepareStickyItemView(parent, firstVisibleItemPosition, adapter, logBuilder)
-        calculateStickyItemOffset(parent, firstVisibleItemPosition, logBuilder)
-        drawStickyItemView(canvas, logBuilder)
-        hiddenOriginItemView(parent, firstVisibleItemPosition)
+        val stickyItemPosition = findStickyItemPositionBackward(firstVisibleItemPosition)
+        if (stickyItemPosition != null) {
+            logBuilder?.append(". StickyItem=$stickyItemPosition")
+            val stickyItemView =
+                prepareStickyItemView(parent, adapter, stickyItemPosition, logBuilder)
+            val stickyItemViewOffset =
+                calculateStickyItemOffset(
+                    parent, firstVisibleItemPosition, stickyItemPosition, stickyItemView, logBuilder
+                )
+            logBuilder?.append(". Offset=${stickyItemViewOffset ?: 0}")
+
+            showStickyItemView(canvas, stickyItemView, stickyItemViewOffset)
+
+            hiddenOriginItemView(parent, firstVisibleItemPosition, stickyItemPosition)
+        } else {
+            lastStickyItemPosition = null
+            lastStickyItemView = null
+            logBuilder?.append(". NoStickyItem")
+        }
 
         logBuilder?.apply {
-            Log.d("StickyItemDraw", "onDraw. $this")
+            Log.d("StickyItemDraw", this.toString())
         }
     }
 
     private fun prepareStickyItemView(
         parent: RecyclerView,
-        firstVisibleItemPosition: Int,
         adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        stickItemPosition: Int,
         logBuilder: StringBuilder?,
-    ) {
-        val oldStickItemPosition = stickyItemPosition
-        val newStickItemPosition = findStickyItemPositionBackward(firstVisibleItemPosition)
-        if (newStickItemPosition == null) {
-            logBuilder?.append(", ")?.append("No Sticky Item")
-            stickyItemPosition = null
-            stickyItemView = null
-            return
-        }
-
-        // Changed
-        if (newStickItemPosition != oldStickItemPosition) {
-            stickyItemPosition = newStickItemPosition
-            val stickyItemType = adapter.getItemViewType(newStickItemPosition)
+    ): View {
+        val lastStickyItemView = lastStickyItemView
+        val lastStickItemPosition = lastStickyItemPosition
+        return if (lastStickyItemView == null || stickItemPosition != lastStickItemPosition) {
+            val stickyItemType = adapter.getItemViewType(stickItemPosition)
             val stickyItemViewHolder = viewHolderCachePool[stickyItemType]
                 ?: adapter.createViewHolder(parent, stickyItemType).apply {
                     viewHolderCachePool.put(stickyItemType, this)
                 }
-            adapter.bindViewHolder(stickyItemViewHolder, newStickItemPosition)
-            stickyItemView = stickyItemViewHolder.itemView.apply {
+            adapter.bindViewHolder(stickyItemViewHolder, stickItemPosition)
+            val stickyItemView = stickyItemViewHolder.itemView.apply {
                 val itemLayoutParams = layoutParams
                 val itemWidthMeasureSpec = ViewGroup.getChildMeasureSpec(
                     View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY),
@@ -59,7 +69,9 @@ class StickyItemDraw(baseStickyItemDecoration: BaseStickyItemDecoration) :
                     itemLayoutParams.width
                 )
                 val itemHeightMeasureSpec = ViewGroup.getChildMeasureSpec(
-                    View.MeasureSpec.makeMeasureSpec(parent.height, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(
+                        parent.height, View.MeasureSpec.UNSPECIFIED
+                    ),
                     parent.paddingTop + parent.paddingBottom,
                     itemLayoutParams.height
                 )
@@ -71,73 +83,66 @@ class StickyItemDraw(baseStickyItemDecoration: BaseStickyItemDecoration) :
                     parent.paddingTop + measuredHeight
                 )
             }
-            logBuilder?.append(", ")?.append("New Sticky Item: position=$newStickItemPosition")
+
+            this@StickyItemDraw.lastStickyItemPosition = stickItemPosition
+            this@StickyItemDraw.lastStickyItemView = stickyItemView
+            logBuilder?.append(". New")
+            stickyItemView
         } else {
-            logBuilder?.append(", ")?.append("No Change")
+            logBuilder?.append(". NoChange")
+            lastStickyItemView
         }
     }
 
-    /**
-     * 往上滑动时用新的 sticky item view 一点一点顶掉旧的 sticky item view
-     */
     private fun calculateStickyItemOffset(
         parent: RecyclerView,
         firstVisibleItemPosition: Int,
+        stickyItemPosition: Int,
+        stickyItemView: View,
         logBuilder: StringBuilder?,
-    ) {
+    ): Int? {
         if (disabledScrollStickyHeader) {
-            logBuilder?.append(", ")?.append("disabledOffset")
-            return
-        }
-
-        val stickyItemPosition = stickyItemPosition
-        val stickyItemView = stickyItemView
-        if (stickyItemPosition == null || stickyItemView == null) {
-            logBuilder?.append(", ")?.append("No Sticky Item")
-            stickyItemViewOffset = null
-            return
+            logBuilder?.append(". DisabledOffset")
+            return null
         }
 
         val nextStickItemPosition = findStickyItemPositionForward(parent, firstVisibleItemPosition)
         if (nextStickItemPosition == null || nextStickItemPosition <= stickyItemPosition) {
-            logBuilder?.append(", ")?.append("No Next Sticky Item")
-            stickyItemViewOffset = null
-            return
+            logBuilder?.append(". NoNextStickyItem")
+            return null
         }
 
         val nextStickyItemView = parent.layoutManager?.findViewByPosition(nextStickItemPosition)
         if (nextStickyItemView == null) {
-            logBuilder?.append(", ")?.append("No Next Sticky Item View")
-            stickyItemViewOffset = null
-            return
+            logBuilder?.append(". NoNextStickyItemView")
+            return null
         }
 
         val nextStickyViewTop = nextStickyItemView.top
         val stickyItemViewHeight = stickyItemView.height
-        stickyItemViewOffset = if (nextStickyViewTop in 0..stickyItemViewHeight) {
+        return if (nextStickyViewTop in 0..stickyItemViewHeight) {
             nextStickyViewTop - stickyItemViewHeight
         } else {
             null
         }
-        logBuilder?.append(", ")?.append("offset=${stickyItemViewOffset ?: 0}")
     }
 
-    private fun drawStickyItemView(canvas: Canvas, logBuilder: StringBuilder?) {
-        val stickyItemPosition = stickyItemPosition
-        val stickyItemView = stickyItemView
-        if (stickyItemPosition == null || stickyItemView == null) {
-            logBuilder?.append(", ")?.append("No Sticky Item")
-            return
-        }
-
+    private fun showStickyItemView(
+        canvas: Canvas,
+        stickyItemView: View,
+        stickyItemViewOffset: Int?,
+    ) {
         canvas.save()
-        val stickyItemViewOffset = stickyItemViewOffset
         if (stickyItemViewOffset != null) {
             canvas.translate(0f, stickyItemViewOffset.toFloat())
         }
         stickyItemView.draw(canvas)
         canvas.restore()
+    }
 
-        logBuilder?.append(", ")?.append("Draw Sticky Item")
+    override fun reset() {
+        super.reset()
+        lastStickyItemPosition = null
+        lastStickyItemView = null
     }
 }

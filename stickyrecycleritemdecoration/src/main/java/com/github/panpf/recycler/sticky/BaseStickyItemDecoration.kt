@@ -26,6 +26,11 @@ abstract class BaseStickyItemDecoration(
     stickyItemContainer: ViewGroup?
 ) : RecyclerView.ItemDecoration() {
 
+    companion object {
+        var debugMode = true
+    }
+
+    @Suppress("LeakingThis")
     private val sticky = if (stickyItemContainer != null) {
         ContainerStickyItemDraw(this, stickyItemContainer)
     } else {
