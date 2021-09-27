@@ -1,48 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 在 StaggeredLayoutManager 中使用时 root Layout 不能使用绝对尺寸 -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_marginStart="20dp"
-    android:layout_marginLeft="20dp"
-    android:layout_marginEnd="20dp"
-    android:layout_marginRight="20dp"
-    android:background="#88FFFFFF">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/listSeparatorItemTitleText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/listSeparatorItemActionText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="我是小尾巴" />
+        android:background="#88FFFFFF">
 
-    <TextView
-        android:id="@+id/listSeparatorItemActionText"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        android:paddingStart="20dp"
-        android:paddingLeft="20dp"
-        android:paddingBottom="10dp"
-        android:text="@string/button_tap_me"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/listSeparatorItemTitleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/listSeparatorItemActionText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="我是小尾巴" />
 
-    <View
-        android:id="@+id/listSeparatorItemDividerView"
-        android:layout_width="0dp"
-        android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/listSeparatorItemActionText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:paddingStart="20dp"
+            android:paddingLeft="20dp"
+            android:paddingBottom="10dp"
+            android:text="@string/button_tap_me"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/listSeparatorItemDividerView"
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

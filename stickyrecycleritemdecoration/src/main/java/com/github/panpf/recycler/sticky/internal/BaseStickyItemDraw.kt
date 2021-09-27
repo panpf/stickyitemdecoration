@@ -126,7 +126,7 @@ abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: StickyIt
             is StaggeredGridLayoutManager -> {
                 getInto(layoutManager).apply {
                     layoutManager.findFirstVisibleItemPositions(this)
-                }.minOf { it }
+                }.minOfOrNull { it } ?: 0
             }
             else -> {
                 null
@@ -144,7 +144,7 @@ abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: StickyIt
             is StaggeredGridLayoutManager -> {
                 getInto(layoutManager).apply {
                     layoutManager.findLastVisibleItemPositions(this)
-                }.minOf { it }  // todo 这里貌似要找最大的
+                }.maxOfOrNull { it } ?: 0
             }
             else -> {
                 0

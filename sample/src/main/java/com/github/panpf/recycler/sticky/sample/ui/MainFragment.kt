@@ -68,6 +68,28 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
             "Grid - Horizontal - Clickable",
             GridAssemblyHorFragment.create(stickyItemClickable = true)
         ),
+
+        ListSeparator("StaggeredGrid"),
+
+        Link(
+            "StaggeredGrid",
+            StaggeredGridAssemblyFragment.create(stickyItemClickable = false)
+        ),
+
+        Link(
+            "StaggeredGrid - Clickable",
+            StaggeredGridAssemblyFragment.create(stickyItemClickable = true)
+        ),
+
+        Link(
+            "StaggeredGrid - Horizontal",
+            StaggeredGridAssemblyHorFragment.create(stickyItemClickable = false)
+        ),
+
+        Link(
+            "StaggeredGrid - Horizontal - Clickable",
+            StaggeredGridAssemblyHorFragment.create(stickyItemClickable = true)
+        ),
     )
 
     override fun createViewBinding(
