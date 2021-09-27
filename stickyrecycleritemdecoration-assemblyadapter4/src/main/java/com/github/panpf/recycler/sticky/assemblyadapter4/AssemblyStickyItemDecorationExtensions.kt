@@ -83,7 +83,7 @@ fun RecyclerView.addAssemblyStickyItemDecorationWithItemType(
  * Add a [AssemblyStickyItemDecoration] to [RecyclerView] by specifying the [ItemFactory]
  */
 fun RecyclerView.addAssemblyStickyItemDecorationWithItemFactory(
-    itemFactoryClassList: List<KClass<out ItemFactory<out Any>>>,
+    itemFactoryClassList: List<KClass<*>>,
     config: (AssemblyStickyItemDecoration.Builder.() -> Unit)? = null
 ) {
     addItemDecoration(
@@ -98,7 +98,7 @@ fun RecyclerView.addAssemblyStickyItemDecorationWithItemFactory(
  * Add a [AssemblyStickyItemDecoration] to [RecyclerView] by specifying the [ItemFactory]
  */
 fun RecyclerView.addAssemblyStickyItemDecorationWithItemFactory(
-    vararg itemFactoryClassArray: KClass<out ItemFactory<out Any>>,
+    vararg itemFactoryClassArray: KClass<*>,
     config: (AssemblyStickyItemDecoration.Builder.() -> Unit)? = null
 ) {
     addItemDecoration(

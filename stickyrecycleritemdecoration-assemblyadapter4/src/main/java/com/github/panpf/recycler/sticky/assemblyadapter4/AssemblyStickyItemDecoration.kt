@@ -25,14 +25,14 @@ import kotlin.reflect.KClass
 /**
  * Support sticky item judgment based on [ItemFactory] on the basis of [StickyItemDecoration]
  */
-class AssemblyStickyItemDecoration private constructor(
+open class AssemblyStickyItemDecoration constructor(
     stickyItemPositionList: List<Int>? = null,
     stickyItemTypeList: List<Int>? = null,
-    stickyItemFactoryKClassList: List<KClass<out ItemFactory<out Any>>>?,
+    stickyItemFactoryKClassList: List<KClass<*>>?,
     stickyItemContainer: ViewGroup? = null,
 ) : StickyItemDecoration(stickyItemPositionList, stickyItemTypeList, stickyItemContainer) {
 
-    private val itemFactoryClassList: List<Class<out ItemFactory<out Any>>>? =
+    private val itemFactoryClassList: List<Class<*>>? =
         stickyItemFactoryKClassList?.takeIf { it.isNotEmpty() }?.map { it.java }
 
     override fun isStickyItemByPosition(
@@ -46,11 +46,7 @@ class AssemblyStickyItemDecoration private constructor(
 
         if (itemFactoryClassList != null) {
             val (localAdapter, localPosition) = findLocalAdapterAndPosition(adapter, position)
-            val itemFactoryClass: Class<*>? = if (localAdapter is AssemblyAdapter<*, *>) {
-                localAdapter.getItemFactoryByPosition(localPosition).javaClass
-            } else {
-                null
-            }
+            val itemFactoryClass = findItemFactoryClassByPosition(localAdapter, localPosition)
             if (itemFactoryClass != null && itemFactoryClassList.contains(itemFactoryClass)) {
                 return true
             }
@@ -59,9 +55,19 @@ class AssemblyStickyItemDecoration private constructor(
         return false
     }
 
+    open fun findItemFactoryClassByPosition(
+        localAdapter: RecyclerView.Adapter<*>, localPosition: Int
+    ): Class<*>? {
+        return if (localAdapter is AssemblyAdapter<*, *>) {
+            localAdapter.getItemFactoryByPosition(localPosition).javaClass
+        } else {
+            null
+        }
+    }
+
     class Builder : StickyItemDecoration.Builder() {
 
-        private var stickyItemFactoryKClassList: List<KClass<out ItemFactory<out Any>>>? = null
+        private var stickyItemFactoryKClassList: List<KClass<*>>? = null
 
         /**
          * Set the item at the specified position to always be displayed at the top of the RecyclerView
@@ -106,7 +112,7 @@ class AssemblyStickyItemDecoration private constructor(
         /**
          * Set the item at the specified [ItemFactory] to always be displayed at the top of the RecyclerView
          */
-        fun itemFactory(vararg itemFactory: KClass<out ItemFactory<out Any>>): Builder {
+        fun itemFactory(vararg itemFactory: KClass<*>): Builder {
             this.stickyItemFactoryKClassList = itemFactory.toList()
             return this
         }
@@ -114,7 +120,7 @@ class AssemblyStickyItemDecoration private constructor(
         /**
          * Set the item at the specified [ItemFactory] to always be displayed at the top of the RecyclerView
          */
-        fun itemFactory(itemFactoryList: List<KClass<out ItemFactory<out Any>>>): Builder {
+        fun itemFactory(itemFactoryList: List<KClass<*>>): Builder {
             this.stickyItemFactoryKClassList = itemFactoryList
             return this
         }

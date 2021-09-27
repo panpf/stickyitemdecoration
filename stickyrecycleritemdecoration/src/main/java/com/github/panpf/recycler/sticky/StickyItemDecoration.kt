@@ -35,6 +35,10 @@ open class StickyItemDecoration constructor(
     stickyItemContainer: ViewGroup? = null,
 ) : RecyclerView.ItemDecoration() {
 
+    companion object {
+        var debugMode = false
+    }
+
     private val positionArray: SparseBooleanArray? =
         if (stickyItemPositionList?.isNotEmpty() == true) {
             SparseBooleanArray().apply {
@@ -51,10 +55,6 @@ open class StickyItemDecoration constructor(
         null
     }
     private val concatAdapterLocalHelper by lazy { ConcatAdapterLocalHelper() }
-
-    companion object {
-        var debugMode = true
-    }
 
     @Suppress("LeakingThis")
     private val stickyItemPainter: StickyItemPainter = if (stickyItemContainer != null) {
