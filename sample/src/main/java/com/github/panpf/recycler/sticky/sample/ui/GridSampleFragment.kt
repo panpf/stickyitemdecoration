@@ -21,22 +21,27 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
+import com.github.panpf.assemblyadapter.recycler.ItemSpan
+import com.github.panpf.assemblyadapter.recycler.divider.Divider
+import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
 import com.github.panpf.recycler.sticky.StickyItemDecoration
 import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithItemFactory
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
-import com.github.panpf.recycler.sticky.sample.item.AppItemFactory
+import com.github.panpf.recycler.sticky.sample.item.AppCardGridItemFactory
 import com.github.panpf.recycler.sticky.sample.item.AppsOverviewItemFactory
 import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
 import com.github.panpf.recycler.sticky.sample.vm.MenuViewModel
 import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
+import com.github.panpf.tools4a.dimen.ktx.dp2px
 
-class AssemblySampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
+class GridSampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     companion object {
-        fun create(stickyItemClickable: Boolean = false) = AssemblySampleFragment().apply {
+        fun create(stickyItemClickable: Boolean = false) = GridSampleFragment().apply {
             arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
         }
     }
@@ -60,21 +65,44 @@ class AssemblySampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
     override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
         val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
             listOf(
-                AppItemFactory(),
+                AppCardGridItemFactory(),
                 ListSeparatorItemFactory(),
                 AppsOverviewItemFactory()
             )
         )
         binding.recyclerRecycler.apply {
             adapter = recyclerAdapter
-            layoutManager = LinearLayoutManager(
+            layoutManager = AssemblyGridLayoutManager(
                 requireContext(),
-                LinearLayoutManager.VERTICAL,
-                false
+                3,
+                GridLayoutManager.VERTICAL,
+                false,
+                mapOf(
+                    AppsOverviewItemFactory::class to ItemSpan.fullSpan(),
+                    ListSeparatorItemFactory::class to ItemSpan.fullSpan()
+                )
             )
             addAssemblyStickyItemDecorationWithItemFactory(ListSeparatorItemFactory::class) {
                 if (stickyItemClickable) {
                     showInContainer(binding.recyclerStickyContainer)
+                }
+            }
+            addAssemblyGridDividerItemDecoration {
+                divider(Divider.space(16.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewItemFactory::class)
+                }
+                footerDivider(Divider.space(20.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewItemFactory::class)
+                    disableByItemFactoryClass(ListSeparatorItemFactory::class)
+                }
+                sideDivider(Divider.space(16.dp2px))
+                sideHeaderDivider(Divider.space(20.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewItemFactory::class)
+                    disableByItemFactoryClass(ListSeparatorItemFactory::class)
+                }
+                sideFooterDivider(Divider.space(20.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewItemFactory::class)
+                    disableByItemFactoryClass(ListSeparatorItemFactory::class)
                 }
             }
         }

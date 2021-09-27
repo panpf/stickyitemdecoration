@@ -15,29 +15,30 @@
  */
 package com.github.panpf.recycler.sticky.sample.item
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.recycler.sticky.sample.R
 import com.github.panpf.recycler.sticky.sample.bean.AppInfo
-import com.github.panpf.recycler.sticky.sample.databinding.ItemAppHorizontalBinding
+import com.github.panpf.recycler.sticky.sample.databinding.ItemAppGridCardHorBinding
 import me.panpf.sketch.shaper.RoundRectImageShaper
 import me.panpf.sketch.uri.AppIconUriModel
 
-class AppHorizontalItemFactory : BindingItemFactory<AppInfo, ItemAppHorizontalBinding>(AppInfo::class) {
+class AppCardGridHorItemFactory :
+    BindingItemFactory<AppInfo, ItemAppGridCardHorBinding>(AppInfo::class) {
 
     override fun createItemViewBinding(
         context: Context, inflater: LayoutInflater, parent: ViewGroup
-    ): ItemAppHorizontalBinding {
-        return ItemAppHorizontalBinding.inflate(inflater, parent, false)
+    ): ItemAppGridCardHorBinding {
+        return ItemAppGridCardHorBinding.inflate(inflater, parent, false)
     }
 
     override fun initItem(
-        context: Context, binding: ItemAppHorizontalBinding, item: BindingItem<AppInfo, ItemAppHorizontalBinding>
+        context: Context,
+        binding: ItemAppGridCardHorBinding,
+        item: BindingItem<AppInfo, ItemAppGridCardHorBinding>
     ) {
         binding.root.setOnClickListener {
             val data = item.dataOrThrow
@@ -48,28 +49,26 @@ class AppHorizontalItemFactory : BindingItemFactory<AppInfo, ItemAppHorizontalBi
             }
         }
 
-        binding.appHorizontalItemIconImage.options.shaper =
-            RoundRectImageShaper(context.resources.getDimension(R.dimen.app_icon_corner_radius)).apply {
-                setStroke(
-                    ResourcesCompat.getColor(context.resources, R.color.app_icon_stroke, null),
-                    context.resources.getDimensionPixelSize(R.dimen.app_icon_stroke_width)
-                )
-            }
+        binding.appGridCardHorItemIconImage.options.shaper = RoundRectImageShaper(
+            context.resources.getDimension(R.dimen.app_icon_corner_radius)
+        ).apply {
+            setStroke(
+                ResourcesCompat.getColor(context.resources, R.color.app_icon_stroke, null),
+                context.resources.getDimensionPixelSize(R.dimen.app_icon_stroke_width)
+            )
+        }
     }
 
-    @SuppressLint("SetTextI18n")
     override fun bindItemData(
         context: Context,
-        binding: ItemAppHorizontalBinding,
-        item: BindingItem<AppInfo, ItemAppHorizontalBinding>,
+        binding: ItemAppGridCardHorBinding,
+        item: BindingItem<AppInfo, ItemAppGridCardHorBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: AppInfo
     ) {
         val appIconUri = AppIconUriModel.makeUri(data.packageName, data.versionCode)
-        binding.appHorizontalItemIconImage.displayImage(appIconUri)
-        binding.appHorizontalItemNameText.text = data.name
-        binding.appHorizontalItemVersionText.text = "v${data.versionName}"
-        binding.appHorizontalItemSizeText.text = Formatter.formatFileSize(context, data.apkSize)
+        binding.appGridCardHorItemIconImage.displayImage(appIconUri)
+        binding.appGridCardHorItemNameText.text = data.name
     }
 }

@@ -15,42 +15,59 @@ import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     private val links = listOf(
-        ListSeparator("How To Determine Sticky Item"),
+        ListSeparator("Linear"),
+
         Link(
-            "Position",
+            "Linear - Position",
             SampleFragment.create(way = SampleFragment.Way.POSITION)
         ),
 
         Link(
-            "ItemType",
+            "Linear - ItemType",
             SampleFragment.create(way = SampleFragment.Way.ITEM_TYPE)
         ),
 
         Link(
-            "AssemblyItemFactory",
-            AssemblySampleFragment.create(stickyItemClickable = false, horizontal = false)
-        ),
-
-        ListSeparator("Clickable"),
-
-        Link(
-            "Clickable",
-            AssemblySampleFragment.create(stickyItemClickable = true, horizontal = false)
-        ),
-
-        ListSeparator("Horizontal"),
-
-        Link(
-            "Horizontal",
-            AssemblySampleFragment.create(stickyItemClickable = false, horizontal = true)
+            "Linear - AssemblyItemFactory",
+            AssemblySampleFragment.create(stickyItemClickable = false)
         ),
 
         Link(
-            "Horizontal - Clickable",
-            AssemblySampleFragment.create(stickyItemClickable = true, horizontal = true)
+            "Linear - Clickable",
+            AssemblySampleFragment.create(stickyItemClickable = true)
         ),
 
-        // todo grid, staggeredGrid
+        Link(
+            "Linear - Horizontal",
+            HorAssemblySampleFragment.create(stickyItemClickable = false)
+        ),
+
+        Link(
+            "Linear - Horizontal - Clickable",
+            HorAssemblySampleFragment.create(stickyItemClickable = true)
+        ),
+
+        ListSeparator("Grid"),
+
+        Link(
+            "Grid",
+            GridSampleFragment.create(stickyItemClickable = false)
+        ),
+
+        Link(
+            "Grid - Clickable",
+            GridSampleFragment.create(stickyItemClickable = true)
+        ),
+
+        Link(
+            "Grid - Horizontal",
+            HorGridSampleFragment.create(stickyItemClickable = false)
+        ),
+
+        Link(
+            "Grid - Horizontal - Clickable",
+            HorGridSampleFragment.create(stickyItemClickable = true)
+        ),
     )
 
     override fun createViewBinding(

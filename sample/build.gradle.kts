@@ -50,4 +50,5 @@ dependencies {
     implementation(project(":stickyrecycleritemdecoration-assemblyadapter4"))
     implementation("com.github.promeg:tinypinyin:${property("TINYPINYIN")}")
     implementation("io.github.panpf.liveevent:liveevent:${property("LIVEEVENT")}")
+    implementation("io.github.panpf.tools4a:tools4a-dimen-ktx:${property("TOOLS4A")}")
 }

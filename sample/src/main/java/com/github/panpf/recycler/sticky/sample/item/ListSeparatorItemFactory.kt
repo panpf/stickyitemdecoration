@@ -24,7 +24,7 @@ import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
 import com.github.panpf.recycler.sticky.sample.databinding.ItemListSeparatorBinding
 
-open class ListSeparatorItemFactory(val hiddenTapMe: Boolean = false)
+class ListSeparatorItemFactory(val hiddenTapMe: Boolean = false)
     : BindingItemFactory<ListSeparator, ItemListSeparatorBinding>(ListSeparator::class) {
 
     override fun createItemViewBinding(

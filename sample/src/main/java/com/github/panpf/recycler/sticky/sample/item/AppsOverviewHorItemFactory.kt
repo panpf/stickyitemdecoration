@@ -18,42 +18,37 @@ package com.github.panpf.recycler.sticky.sample.item
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.isVisible
 import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
-import com.github.panpf.recycler.sticky.sample.databinding.ItemListSeparatorHorizontalBinding
+import com.github.panpf.recycler.sticky.sample.R
+import com.github.panpf.recycler.sticky.sample.bean.AppsOverview
+import com.github.panpf.recycler.sticky.sample.databinding.ItemAppsOverviewHorBinding
 
-open class ListSeparatorHorizontalItemFactory(val hiddenTapMe: Boolean = false)
-    : BindingItemFactory<ListSeparator, ItemListSeparatorHorizontalBinding>(ListSeparator::class) {
+class AppsOverviewHorItemFactory
+    : BindingItemFactory<AppsOverview, ItemAppsOverviewHorBinding>(AppsOverview::class) {
 
     override fun createItemViewBinding(
         context: Context, inflater: LayoutInflater, parent: ViewGroup
-    ): ItemListSeparatorHorizontalBinding {
-        return ItemListSeparatorHorizontalBinding.inflate(inflater, parent, false)
+    ): ItemAppsOverviewHorBinding {
+        return ItemAppsOverviewHorBinding.inflate(inflater, parent, false)
     }
 
     override fun initItem(
         context: Context,
-        binding: ItemListSeparatorHorizontalBinding,
-        item: BindingItem<ListSeparator, ItemListSeparatorHorizontalBinding>
+        binding: ItemAppsOverviewHorBinding,
+        item: BindingItem<AppsOverview, ItemAppsOverviewHorBinding>
     ) {
-        binding.listSeparatorHorizontalItemActionText.apply {
-            setOnClickListener {
-                Toast.makeText(context, "You tap me", Toast.LENGTH_LONG).show()
-            }
-            isVisible = !hiddenTapMe
-        }
     }
 
     override fun bindItemData(
         context: Context,
-        binding: ItemListSeparatorHorizontalBinding,
-        item: BindingItem<ListSeparator, ItemListSeparatorHorizontalBinding>,
+        binding: ItemAppsOverviewHorBinding,
+        item: BindingItem<AppsOverview, ItemAppsOverviewHorBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
-        data: ListSeparator
+        data: AppsOverview
     ) {
-        binding.listSeparatorHorizontalItemTitleText.text = data.title
+        binding.appsOverviewHorItemContentText.text = context.getString(
+            R.string.apps_overview_item, data.count, data.userAppCount, data.groupCount
+        )
     }
 }

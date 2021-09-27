@@ -19,24 +19,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
+import com.github.panpf.assemblyadapter.recycler.ItemSpan
+import com.github.panpf.assemblyadapter.recycler.divider.Divider
+import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
 import com.github.panpf.recycler.sticky.StickyItemDecoration
 import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithItemFactory
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
-import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
-import com.github.panpf.recycler.sticky.sample.item.AppItemFactory
-import com.github.panpf.recycler.sticky.sample.item.AppsOverviewItemFactory
-import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
+import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerHorBinding
+import com.github.panpf.recycler.sticky.sample.item.AppCardGridHorItemFactory
+import com.github.panpf.recycler.sticky.sample.item.AppsOverviewHorItemFactory
+import com.github.panpf.recycler.sticky.sample.item.ListSeparatorHorItemFactory
 import com.github.panpf.recycler.sticky.sample.vm.MenuViewModel
 import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
+import com.github.panpf.tools4a.dimen.ktx.dp2px
 
-class AssemblySampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
+class HorGridSampleFragment : BaseBindingFragment<FragmentRecyclerHorBinding>() {
 
     companion object {
-        fun create(stickyItemClickable: Boolean = false) = AssemblySampleFragment().apply {
+        fun create(stickyItemClickable: Boolean = false) = HorGridSampleFragment().apply {
             arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
         }
     }
@@ -53,28 +59,58 @@ class AssemblySampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?
-    ): FragmentRecyclerBinding {
-        return FragmentRecyclerBinding.inflate(inflater, parent, false)
+    ): FragmentRecyclerHorBinding {
+        return FragmentRecyclerHorBinding.inflate(inflater, parent, false)
     }
 
-    override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
+    override fun onInitData(binding: FragmentRecyclerHorBinding, savedInstanceState: Bundle?) {
+        binding.recyclerHorStickyContainer.updateLayoutParams<ViewGroup.LayoutParams> {
+            width = ViewGroup.LayoutParams.WRAP_CONTENT
+            height = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+
         val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
             listOf(
-                AppItemFactory(),
-                ListSeparatorItemFactory(),
-                AppsOverviewItemFactory()
+                AppCardGridHorItemFactory(),
+                ListSeparatorHorItemFactory(),
+                AppsOverviewHorItemFactory()
             )
         )
-        binding.recyclerRecycler.apply {
+        binding.recyclerHorRecycler.apply {
             adapter = recyclerAdapter
-            layoutManager = LinearLayoutManager(
+            layoutManager = AssemblyGridLayoutManager(
                 requireContext(),
-                LinearLayoutManager.VERTICAL,
-                false
+                4,
+                GridLayoutManager.HORIZONTAL,
+                false,
+                mapOf(
+                    AppsOverviewHorItemFactory::class to ItemSpan.fullSpan(),
+                    ListSeparatorHorItemFactory::class to ItemSpan.fullSpan()
+                )
             )
-            addAssemblyStickyItemDecorationWithItemFactory(ListSeparatorItemFactory::class) {
+            addAssemblyStickyItemDecorationWithItemFactory(
+                ListSeparatorHorItemFactory::class
+            ) {
                 if (stickyItemClickable) {
-                    showInContainer(binding.recyclerStickyContainer)
+                    showInContainer(binding.recyclerHorStickyContainer)
+                }
+            }
+            addAssemblyGridDividerItemDecoration {
+                divider(Divider.space(16.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewHorItemFactory::class)
+                }
+                footerDivider(Divider.space(20.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewHorItemFactory::class)
+                    disableByItemFactoryClass(ListSeparatorHorItemFactory::class)
+                }
+                sideDivider(Divider.space(16.dp2px))
+                sideHeaderDivider(Divider.space(20.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewHorItemFactory::class)
+                    disableByItemFactoryClass(ListSeparatorHorItemFactory::class)
+                }
+                sideFooterDivider(Divider.space(20.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewHorItemFactory::class)
+                    disableByItemFactoryClass(ListSeparatorHorItemFactory::class)
                 }
             }
         }
@@ -88,7 +124,7 @@ class AssemblySampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             when (it?.id) {
                 1 -> {
                     disabledScrollUpStickyItem = !disabledScrollUpStickyItem
-                    binding.recyclerRecycler.apply {
+                    binding.recyclerHorRecycler.apply {
                         (getItemDecorationAt(0) as StickyItemDecoration)
                             .disabledScrollUpStickyItem = disabledScrollUpStickyItem
                         postInvalidate()
@@ -98,7 +134,7 @@ class AssemblySampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
                 2 -> {
                     invisibleOriginItemWhenStickyItemShowing =
                         !invisibleOriginItemWhenStickyItemShowing
-                    binding.recyclerRecycler.apply {
+                    binding.recyclerHorRecycler.apply {
                         (getItemDecorationAt(0) as StickyItemDecoration)
                             .invisibleOriginItemWhenStickyItemShowing =
                             invisibleOriginItemWhenStickyItemShowing
