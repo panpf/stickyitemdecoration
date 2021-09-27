@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="50dp"
     android:layout_height="match_parent"
+    android:layout_marginTop="20dp"
+    android:layout_marginBottom="20dp"
     android:background="#88FFFFFF">
 
     <TextView
@@ -12,7 +14,6 @@
         android:layout_height="0dp"
         android:layout_marginStart="26dp"
         android:layout_marginLeft="26dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="20dp"
@@ -32,7 +33,6 @@
         android:paddingTop="20dp"
         android:paddingEnd="10dp"
         android:paddingRight="10dp"
-        android:paddingBottom="20dp"
         android:text="@string/button_tap_me"
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -42,8 +42,6 @@
         android:id="@+id/listSeparatorHorItemDividerView"
         android:layout_width="0.5dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

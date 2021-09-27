@@ -1,6 +1,7 @@
 package com.github.panpf.recycler.sticky.internal
 
 import android.graphics.Canvas
+import android.os.Build
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -61,13 +62,23 @@ class StickyItemDraw(stickyItemDecoration: StickyItemDecoration) :
                 }
             adapter.bindViewHolder(stickyItemViewHolder, stickItemPosition)
             val stickyItemView = stickyItemViewHolder.itemView.apply {
-                val itemLayoutParams = layoutParams
+                val itemLayoutParams = layoutParams as RecyclerView.LayoutParams
+                val layoutMarginStart = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    itemLayoutParams.marginStart.takeIf { it != 0 } ?: itemLayoutParams.leftMargin
+                } else {
+                    itemLayoutParams.leftMargin
+                }
+                val layoutMarginEnd = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    itemLayoutParams.marginEnd.takeIf { it != 0 } ?: itemLayoutParams.rightMargin
+                } else {
+                    itemLayoutParams.rightMargin
+                }
                 val itemWidthMeasureSpec = ViewGroup.getChildMeasureSpec(
                     View.MeasureSpec.makeMeasureSpec(
                         parent.width,
                         if (isVertical(parent)) View.MeasureSpec.EXACTLY else View.MeasureSpec.UNSPECIFIED
                     ),
-                    parent.paddingLeft + parent.paddingRight,
+                    parent.paddingLeft + parent.paddingRight + layoutMarginStart + layoutMarginEnd,
                     itemLayoutParams.width
                 )
                 val itemHeightMeasureSpec = ViewGroup.getChildMeasureSpec(
@@ -75,15 +86,15 @@ class StickyItemDraw(stickyItemDecoration: StickyItemDecoration) :
                         parent.height,
                         if (isVertical(parent)) View.MeasureSpec.UNSPECIFIED else View.MeasureSpec.EXACTLY
                     ),
-                    parent.paddingTop + parent.paddingBottom,
+                    parent.paddingTop + parent.paddingBottom + itemLayoutParams.topMargin + itemLayoutParams.bottomMargin,
                     itemLayoutParams.height
                 )
                 measure(itemWidthMeasureSpec, itemHeightMeasureSpec)
                 layout(
-                    parent.paddingLeft,
-                    parent.paddingTop,
-                    parent.paddingLeft + measuredWidth,
-                    parent.paddingTop + measuredHeight
+                    parent.paddingLeft + layoutMarginStart,
+                    parent.paddingTop + itemLayoutParams.topMargin,
+                    parent.paddingLeft + layoutMarginStart + measuredWidth,
+                    parent.paddingTop + itemLayoutParams.topMargin + measuredHeight
                 )
             }
 
@@ -154,6 +165,7 @@ class StickyItemDraw(stickyItemDecoration: StickyItemDecoration) :
                 canvas.translate(stickyItemViewOffset.toFloat(), 0f)
             }
         }
+        canvas.translate(stickyItemView.left.toFloat(), stickyItemView.top.toFloat())
         stickyItemView.draw(canvas)
         canvas.restore()
     }
