@@ -22,30 +22,29 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.recycler.sticky.StickyItemDecoration
-import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithPosition
+import com.github.panpf.recycler.sticky.addStickyItemDecorationWithItemType
+import com.github.panpf.recycler.sticky.addStickyItemDecorationWithPosition
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
-import com.github.panpf.recycler.sticky.sample.item.AppItemFactory
-import com.github.panpf.recycler.sticky.sample.item.AppsOverviewItemFactory
-import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
+import com.github.panpf.recycler.sticky.sample.item.AppListAdapter
 import com.github.panpf.recycler.sticky.sample.vm.MenuViewModel
 import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
 
-class AssemblyPositionFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
+class SampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     companion object {
-        fun create(stickyItemClickable: Boolean = false): AssemblyPositionFragment =
-            AssemblyPositionFragment().apply {
-                arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
-            }
+        fun create(way: Way): SampleFragment = SampleFragment().apply {
+            arguments = bundleOf("way" to way.name)
+        }
     }
 
-    private val stickyItemClickable by lazy {
-        arguments?.getBoolean("stickyItemClickable") ?: false
+    enum class Way {
+        POSITION, ITEM_TYPE
     }
+
+    private val way by lazy { Way.valueOf(arguments?.getString("way") ?: Way.POSITION.name) }
 
     private val viewModel by viewModels<PinyinFlatAppsViewModel>()
     private val menuViewModel by activityViewModels<MenuViewModel>()
@@ -60,35 +59,31 @@ class AssemblyPositionFragment : BaseBindingFragment<FragmentRecyclerBinding>() 
     }
 
     override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
-        val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
-            listOf(
-                AppItemFactory(),
-                ListSeparatorItemFactory(),
-                AppsOverviewItemFactory()
-            )
-        )
         binding.recyclerRecycler.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = recyclerAdapter
+            adapter = AppListAdapter()
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+            )
         }
 
         viewModel.pinyinFlatAppListData.observe(viewLifecycleOwner) {
             val dataList = listOf(viewModel.appsOverviewData.value!!).plus(it ?: emptyList())
-
-            val listSeparatorPositionList = ArrayList<Int>()
-            dataList.forEachIndexed { index, item ->
-                if (item is ListSeparator) {
-                    listSeparatorPositionList.add(index)
+            if (way == Way.POSITION) {
+                val listSeparatorPositionList = ArrayList<Int>()
+                dataList.forEachIndexed { index, item ->
+                    if (item is ListSeparator) {
+                        listSeparatorPositionList.add(index)
+                    }
                 }
+                binding.recyclerRecycler.addStickyItemDecorationWithPosition(
+                    listSeparatorPositionList
+                )
+            } else {
+                binding.recyclerRecycler.addStickyItemDecorationWithItemType(1)
             }
-            binding.recyclerRecycler.addAssemblyStickyItemDecorationWithPosition(
-                listSeparatorPositionList
-            ) {
-                if (stickyItemClickable) {
-                    showInContainer(binding.recyclerStickyContainer)
-                }
-            }
-            recyclerAdapter.submitList(dataList)
+            (binding.recyclerRecycler.adapter!! as AppListAdapter).submitList(dataList)
         }
 
         menuViewModel.menuClickEvent.listen(viewLifecycleOwner) {

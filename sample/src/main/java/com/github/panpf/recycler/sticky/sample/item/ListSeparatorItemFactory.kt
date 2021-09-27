@@ -40,7 +40,7 @@ open class ListSeparatorItemFactory(val hiddenTapMe: Boolean = false)
     ) {
         binding.listSeparatorItemActionText.apply {
             setOnClickListener {
-                Toast.makeText(context, "Lighter", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "You tap me", Toast.LENGTH_LONG).show()
             }
             isVisible = !hiddenTapMe
         }

@@ -19,32 +19,37 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.recycler.sticky.StickyItemDecoration
-import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithItemType
+import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithItemFactory
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
-import com.github.panpf.recycler.sticky.sample.item.AppItemFactory
-import com.github.panpf.recycler.sticky.sample.item.AppsOverviewItemFactory
-import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
+import com.github.panpf.recycler.sticky.sample.item.*
 import com.github.panpf.recycler.sticky.sample.vm.MenuViewModel
 import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
 
-class AssemblyItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
+class AssemblySampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     companion object {
-        fun create(stickyItemClickable: Boolean = false): AssemblyItemTypeFragment =
-            AssemblyItemTypeFragment().apply {
-                arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
-            }
+        fun create(
+            stickyItemClickable: Boolean = false,
+            horizontal: Boolean = false,
+        ): AssemblySampleFragment = AssemblySampleFragment().apply {
+            arguments = bundleOf(
+                "stickyItemClickable" to stickyItemClickable,
+                "horizontal" to horizontal,
+            )
+        }
     }
 
     private val stickyItemClickable by lazy {
         arguments?.getBoolean("stickyItemClickable") ?: false
     }
+    private val horizontal by lazy { arguments?.getBoolean("horizontal") ?: false }
 
     private val viewModel by viewModels<PinyinFlatAppsViewModel>()
     private val menuViewModel by activityViewModels<MenuViewModel>()
@@ -59,17 +64,42 @@ class AssemblyItemTypeFragment : BaseBindingFragment<FragmentRecyclerBinding>() 
     }
 
     override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
+        if (horizontal) {
+            binding.recyclerStickyContainer.updateLayoutParams<ViewGroup.LayoutParams> {
+                width = ViewGroup.LayoutParams.WRAP_CONTENT
+                height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+        }
+
         val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
-            listOf(
-                AppItemFactory(),
-                ListSeparatorItemFactory(),
-                AppsOverviewItemFactory()
-            )
+            if (horizontal) {
+                listOf(
+                    AppHorizontalItemFactory(),
+                    ListSeparatorHorizontalItemFactory(),
+                    AppsOverviewHorizontalItemFactory()
+                )
+            } else {
+                listOf(
+                    AppItemFactory(),
+                    ListSeparatorItemFactory(),
+                    AppsOverviewItemFactory()
+                )
+            }
         )
         binding.recyclerRecycler.apply {
             adapter = recyclerAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            addAssemblyStickyItemDecorationWithItemType(1) {
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                if (horizontal) LinearLayoutManager.HORIZONTAL else LinearLayoutManager.VERTICAL,
+                false
+            )
+            addAssemblyStickyItemDecorationWithItemFactory(
+                if (horizontal) {
+                    ListSeparatorHorizontalItemFactory::class
+                } else {
+                    ListSeparatorItemFactory::class
+                }
+            ) {
                 if (stickyItemClickable) {
                     showInContainer(binding.recyclerStickyContainer)
                 }

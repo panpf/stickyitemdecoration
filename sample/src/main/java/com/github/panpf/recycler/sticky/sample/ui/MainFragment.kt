@@ -15,48 +15,39 @@ import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     private val links = listOf(
-        ListSeparator("Normal"),
+        ListSeparator("How To Determine Sticky Item"),
         Link(
-            "Normal - Position",
-            NormalPositionFragment.create(stickyItemClickable = false)
-        ),
-        Link(
-            "Normal - ItemType",
-            NormalItemTypeFragment.create(stickyItemClickable = false)
+            "Position",
+            SampleFragment.create(way = SampleFragment.Way.POSITION)
         ),
 
-        ListSeparator("Assembly"),
         Link(
-            "Assembly - Position",
-            AssemblyPositionFragment.create(stickyItemClickable = false)
+            "ItemType",
+            SampleFragment.create(way = SampleFragment.Way.ITEM_TYPE)
         ),
+
         Link(
-            "Assembly - ItemType",
-            AssemblyItemTypeFragment.create(stickyItemClickable = false)
-        ),
-        Link(
-            "Assembly - ItemFactory",
-            AssemblyItemFactoryFragment.create(stickyItemClickable = false)
+            "AssemblyItemFactory",
+            AssemblySampleFragment.create(stickyItemClickable = false, horizontal = false)
         ),
 
         ListSeparator("Clickable"),
+
         Link(
-            "Clickable - Simple",
-            NormalItemTypeFragment.create(stickyItemClickable = true)
-        ),
-        Link(
-            "Clickable - Assembly",
-            AssemblyItemFactoryFragment.create(stickyItemClickable = true)
+            "Clickable",
+            AssemblySampleFragment.create(stickyItemClickable = true, horizontal = false)
         ),
 
         ListSeparator("Horizontal"),
+
         Link(
             "Horizontal",
-            NormalItemTypeFragment.create(stickyItemClickable = false, horizontal = true)
+            AssemblySampleFragment.create(stickyItemClickable = false, horizontal = true)
         ),
+
         Link(
             "Horizontal - Clickable",
-            NormalItemTypeFragment.create(stickyItemClickable = true, horizontal = true)
+            AssemblySampleFragment.create(stickyItemClickable = true, horizontal = true)
         ),
 
         // todo grid, staggeredGrid
