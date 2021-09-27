@@ -2,5 +2,6 @@
 <resources>
     <string name="app_name">StickyRecyclerItemDecoration</string>
     <string name="apps_overview_item">Apps: %d (User: %d. Group: %d)</string>
+    <string name="apps_overview_item_hor">Apps: %d\nUser: %d\nGroup: %d</string>
     <string name="button_tap_me">TAP ME</string>
 </resources>

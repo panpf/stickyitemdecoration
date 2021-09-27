@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2021 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.panpf.recycler.sticky.internal
 
 import android.graphics.Canvas
@@ -8,10 +23,10 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.recycler.sticky.StickyItemDecoration
 
-class ContainerStickyItemDraw(
+class ContainerStickyItemPainter(
     baseStickyItemDecoration: StickyItemDecoration,
     private val stickyItemContainer: ViewGroup
-) : BaseStickyItemDraw(baseStickyItemDecoration) {
+) : StickyItemPainter(baseStickyItemDecoration) {
 
     private var lastStickyItemPosition: Int? = null
     private var lastStickyItemView: View? = null
@@ -76,8 +91,8 @@ class ContainerStickyItemDraw(
                 visibility = View.VISIBLE
             }
 
-            this@ContainerStickyItemDraw.lastStickyItemPosition = stickItemPosition
-            this@ContainerStickyItemDraw.lastStickyItemView = stickyItemView
+            this@ContainerStickyItemPainter.lastStickyItemPosition = stickItemPosition
+            this@ContainerStickyItemPainter.lastStickyItemView = stickyItemView
             logBuilder?.append(". New")
             stickyItemView
         } else {

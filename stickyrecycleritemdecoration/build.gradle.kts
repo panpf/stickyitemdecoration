@@ -32,6 +32,15 @@ dependencies {
     api("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN")}")
     api("io.github.panpf.assemblyadapter4:assemblyadapter-common-recycler:${property("ASSEMBLY_ADAPTER_VERSION")}")
+
+    testImplementation("junit:junit:${property("JUNIT")}")
+    androidTestImplementation("androidx.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
+    androidTestImplementation("androidx.test:rules:${property("ANDROIDX_TEST_RULES")}")
+    androidTestImplementation("androidx.test.ext:junit-ktx:${property("ANDROIDX_TEST_EXT")}")
+    androidTestImplementation("io.github.panpf.tools4j:tools4j-test-ktx:${property("TOOLS4J")}")
+    androidTestImplementation("io.github.panpf.tools4j:tools4j-reflect-ktx:${property("TOOLS4J")}")
+    androidTestImplementation("io.github.panpf.tools4a:tools4a-test-ktx:${property("TOOLS4A")}")
+    androidTestImplementation("io.github.panpf.assemblyadapter4:assemblyadapter-recycler:${property("ASSEMBLY_ADAPTER_VERSION")}")
 }
 
 /**

@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2021 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.panpf.recycler.sticky.internal
 
 import android.graphics.Canvas
@@ -10,7 +25,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.SimpleAdapterDataObserver
 import com.github.panpf.recycler.sticky.StickyItemDecoration
 
-abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: StickyItemDecoration) {
+abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyItemDecoration) {
 
     protected val viewHolderCachePool = SparseArray<RecyclerView.ViewHolder>()
     private var cacheAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null
@@ -21,18 +36,12 @@ abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: StickyIt
     private var invisibleItemView: View? = null
     private var cacheInto: IntArray? = null
 
-    /**
-     * 禁止滑动过程中下一个 sticky header 往上顶当前 sticky header 的效果
-     */
     var disabledScrollUpStickyItem = false
         set(value) {
             field = value
             reset()
         }
 
-    /**
-     * 滑动过程中 sticky header 显示时隐藏列表中的 sticky item
-     */
     var invisibleOriginItemWhenStickyItemShowing = false
         set(value) {
             field = value
@@ -41,9 +50,6 @@ abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: StickyIt
 
     abstract fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State)
 
-    /*
-     * 列表中的 item 需要在 sticky item 显示的时候隐藏，划出列表的时候恢复显示
-     */
     protected fun hiddenOriginItemView(
         parent: RecyclerView,
         firstVisibleItemPosition: Int,
@@ -53,8 +59,10 @@ abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: StickyIt
 
         if (stickyItemPosition != null && stickyItemPosition == firstVisibleItemPosition) {
             val originStickyItemView = parent.layoutManager?.findViewByPosition(stickyItemPosition)
-            // stickyItemView.getTop() == 0 时隐藏 stickyItemView 会导致 sticky header 区域闪烁一下，这是因为在 sticky header 显示出来之前隐藏了 stickyItemView
-            // 因此限定 stickyItemView.getTop() < 0 也就是说 sticky item 和 sticky header 错开的时候隐藏 sticky item 可以一定程度上避免闪烁，但滑动的快了还是会闪烁一下
+            // originStickyItemView.getTop() == 0 时隐藏 originStickyItemView 会导致 sticky header 区域闪烁一下，
+            // 这是因为在 sticky header 显示出来之前隐藏了 stickyItemView
+            // 因此限定 originStickyItemView.getTop() < 0 也就是说 sticky item 和 sticky header 错开的时候隐藏 sticky item 可以一定程度上避免闪烁，
+            // 但滑动的快了还是会闪烁一下
             if (originStickyItemView != null && originStickyItemView.visibility != View.INVISIBLE && originStickyItemView.top < 0) {
                 originStickyItemView.visibility = View.INVISIBLE
                 invisibleItemView = originStickyItemView
@@ -167,7 +175,7 @@ abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: StickyIt
             intoCache
         } else {
             IntArray(spanCount).apply {
-                this@BaseStickyItemDraw.cacheInto = this
+                this@StickyItemPainter.cacheInto = this
             }
         }
     }

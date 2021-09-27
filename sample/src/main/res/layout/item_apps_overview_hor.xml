@@ -11,7 +11,7 @@
     android:paddingEnd="20dp"
     android:paddingRight="20dp"
     android:paddingBottom="14dp"
-    android:text="@string/apps_overview_item"
+    android:text="@string/apps_overview_item_hor"
     android:textColor="@color/colorPrimaryDark"
     android:textSize="14sp"
     android:textStyle="bold" />
