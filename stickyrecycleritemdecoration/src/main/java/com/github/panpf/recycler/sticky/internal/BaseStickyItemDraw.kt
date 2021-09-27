@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.SimpleAdapterDataObserver
-import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
+import com.github.panpf.recycler.sticky.StickyItemDecoration
 
-abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: BaseStickyItemDecoration) {
+abstract class BaseStickyItemDraw(private val baseStickyItemDecoration: StickyItemDecoration) {
 
     protected val viewHolderCachePool = SparseArray<RecyclerView.ViewHolder>()
     private var cacheAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null

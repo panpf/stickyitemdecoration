@@ -58,6 +58,8 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
             "Horizontal - Clickable",
             NormalItemTypeFragment.create(stickyItemClickable = true, horizontal = true)
         ),
+
+        // todo grid, staggeredGrid
     )
 
     override fun createViewBinding(

@@ -22,7 +22,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
+import com.github.panpf.recycler.sticky.StickyItemDecoration
 import com.github.panpf.recycler.sticky.addStickyItemDecorationWithPosition
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
@@ -87,7 +87,7 @@ class NormalPositionFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
                 1 -> {
                     disabledScrollUpStickyItem = !disabledScrollUpStickyItem
                     binding.recyclerRecycler.apply {
-                        (getItemDecorationAt(0) as BaseStickyItemDecoration)
+                        (getItemDecorationAt(0) as StickyItemDecoration)
                             .disabledScrollUpStickyItem = disabledScrollUpStickyItem
                         postInvalidate()
                     }
@@ -97,7 +97,7 @@ class NormalPositionFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
                     invisibleOriginItemWhenStickyItemShowing =
                         !invisibleOriginItemWhenStickyItemShowing
                     binding.recyclerRecycler.apply {
-                        (getItemDecorationAt(0) as BaseStickyItemDecoration)
+                        (getItemDecorationAt(0) as StickyItemDecoration)
                             .invisibleOriginItemWhenStickyItemShowing =
                             invisibleOriginItemWhenStickyItemShowing
                         postInvalidate()

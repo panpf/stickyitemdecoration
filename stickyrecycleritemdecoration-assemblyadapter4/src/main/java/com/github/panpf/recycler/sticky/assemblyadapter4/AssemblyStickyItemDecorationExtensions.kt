@@ -11,6 +11,7 @@ fun RecyclerView.addAssemblyStickyItemDecorationWithPosition(
     addItemDecoration(
         AssemblyStickyItemDecoration.Builder().apply {
             position(positionList)
+            config?.invoke(this)
         }.build()
     )
 }

@@ -4,14 +4,11 @@ import android.graphics.Canvas
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
+import com.github.panpf.recycler.sticky.StickyItemDecoration
 
-class StickyItemDraw(baseStickyItemDecoration: BaseStickyItemDecoration) :
-    BaseStickyItemDraw(baseStickyItemDecoration) {
+class StickyItemDraw(stickyItemDecoration: StickyItemDecoration) :
+    BaseStickyItemDraw(stickyItemDecoration) {
 
     private var lastStickyItemPosition: Int? = null
     private var lastStickyItemView: View? = null
@@ -21,7 +18,7 @@ class StickyItemDraw(baseStickyItemDecoration: BaseStickyItemDecoration) :
         val firstVisibleItemPosition = findFirstVisibleItemPosition(parent) ?: return
 
         val logBuilder: StringBuilder? =
-            if (BaseStickyItemDecoration.debugMode) StringBuilder() else null
+            if (StickyItemDecoration.debugMode) StringBuilder() else null
         logBuilder?.append("onDraw. FirstItem: $firstVisibleItemPosition")
 
         val stickyItemPosition = findStickyItemPositionBackward(firstVisibleItemPosition)

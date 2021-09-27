@@ -1,12 +1,10 @@
 package com.github.panpf.recycler.sticky.assemblyadapter4
 
-import android.util.SparseBooleanArray
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.assemblyadapter.AssemblyAdapter
 import com.github.panpf.assemblyadapter.ItemFactory
-import com.github.panpf.assemblyadapter.recycler.ConcatAdapterLocalHelper
-import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
+import com.github.panpf.recycler.sticky.StickyItemDecoration
 import kotlin.reflect.KClass
 
 class AssemblyStickyItemDecoration private constructor(
@@ -14,50 +12,24 @@ class AssemblyStickyItemDecoration private constructor(
     stickyItemTypeList: List<Int>? = null,
     stickyItemFactoryKClassList: List<KClass<out ItemFactory<out Any>>>?,
     stickyItemContainer: ViewGroup? = null,
-) : BaseStickyItemDecoration(stickyItemContainer) {
+) : StickyItemDecoration(stickyItemPositionList, stickyItemTypeList, stickyItemContainer) {
 
-    private val positionArray: SparseBooleanArray? =
-        if (stickyItemPositionList?.isNotEmpty() == true) {
-            SparseBooleanArray().apply {
-                stickyItemPositionList.forEach { position -> put(position, true) }
-            }
-        } else {
-            null
-        }
-    private val itemTypeArray: SparseBooleanArray? = if (stickyItemTypeList?.isNotEmpty() == true) {
-        SparseBooleanArray().apply {
-            stickyItemTypeList.forEach { itemType -> put(itemType, true) }
-        }
-    } else {
-        null
-    }
     private val itemFactoryClassList: List<Class<out ItemFactory<out Any>>>? =
         stickyItemFactoryKClassList?.takeIf { it.isNotEmpty() }?.map { it.java }
-    private val concatAdapterLocalHelper = ConcatAdapterLocalHelper()
 
     override fun isStickyItemByPosition(
         adapter: RecyclerView.Adapter<*>,
         position: Int
     ): Boolean {
-        if (positionArray?.get(position) == true) {
-            return true
-        }
-
-        var localAdapter: RecyclerView.Adapter<*>? = null
-        var localPosition: Int? = null
-        if (itemTypeArray != null || itemFactoryClassList != null) {
-            val local = concatAdapterLocalHelper.findLocalAdapterAndPosition(adapter, position)
-            localAdapter = local.first
-            localPosition = local.second
-        }
-        if (itemTypeArray?.get(localAdapter!!.getItemViewType(localPosition!!)) == true) {
+        val isStickyItem = super.isStickyItemByPosition(adapter, position)
+        if (isStickyItem) {
             return true
         }
 
         if (itemFactoryClassList != null) {
-            val adapter1 = localAdapter!!
-            val itemFactoryClass: Class<*>? = if (adapter1 is AssemblyAdapter<*, *>) {
-                adapter1.getItemFactoryByPosition(localPosition!!).javaClass
+            val (localAdapter, localPosition) = findLocalAdapterAndPosition(adapter, position)
+            val itemFactoryClass: Class<*>? = if (localAdapter is AssemblyAdapter<*, *>) {
+                localAdapter.getItemFactoryByPosition(localPosition).javaClass
             } else {
                 null
             }
@@ -69,30 +41,32 @@ class AssemblyStickyItemDecoration private constructor(
         return false
     }
 
-    class Builder {
+    class Builder : StickyItemDecoration.Builder() {
 
-        private var stickyItemPositionList: List<Int>? = null
-        private var stickyItemTypeList: List<Int>? = null
         private var stickyItemFactoryKClassList: List<KClass<out ItemFactory<out Any>>>? = null
-        private var stickyItemContainer: ViewGroup? = null
 
-        fun position(vararg positions: Int): Builder {
-            this.stickyItemPositionList = positions.toList()
+        override fun position(vararg positions: Int): Builder {
+            super.position(*positions)
             return this
         }
 
-        fun position(positions: List<Int>): Builder {
-            this.stickyItemPositionList = positions
+        override fun position(positions: List<Int>): Builder {
+            super.position(positions)
             return this
         }
 
-        fun itemType(vararg itemTypes: Int): Builder {
-            this.stickyItemTypeList = itemTypes.toList()
+        override fun itemType(vararg itemTypes: Int): Builder {
+            super.itemType(*itemTypes)
             return this
         }
 
-        fun itemType(itemTypes: List<Int>): Builder {
-            this.stickyItemTypeList = itemTypes
+        override fun itemType(itemTypes: List<Int>): Builder {
+            super.itemType(itemTypes)
+            return this
+        }
+
+        override fun showInContainer(stickyItemContainer: ViewGroup): Builder {
+            super.showInContainer(stickyItemContainer)
             return this
         }
 
@@ -106,12 +80,7 @@ class AssemblyStickyItemDecoration private constructor(
             return this
         }
 
-        fun showInContainer(stickyItemContainer: ViewGroup): Builder {
-            this.stickyItemContainer = stickyItemContainer
-            return this
-        }
-
-        fun build(): AssemblyStickyItemDecoration {
+        override fun build(): AssemblyStickyItemDecoration {
             return AssemblyStickyItemDecoration(
                 stickyItemPositionList,
                 stickyItemTypeList,

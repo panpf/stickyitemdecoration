@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.github.panpf.recycler.sticky.BaseStickyItemDecoration
+import com.github.panpf.recycler.sticky.StickyItemDecoration
 
 class ContainerStickyItemDraw(
-    baseStickyItemDecoration: BaseStickyItemDecoration,
+    baseStickyItemDecoration: StickyItemDecoration,
     private val stickyItemContainer: ViewGroup
 ) : BaseStickyItemDraw(baseStickyItemDecoration) {
 
@@ -25,7 +25,7 @@ class ContainerStickyItemDraw(
         val firstVisibleItemPosition = findFirstVisibleItemPosition(parent) ?: return
 
         val logBuilder: StringBuilder? =
-            if (BaseStickyItemDecoration.debugMode) StringBuilder() else null
+            if (StickyItemDecoration.debugMode) StringBuilder() else null
         logBuilder?.append("onDraw. FirstItem: $firstVisibleItemPosition")
 
         val stickyItemPosition = findStickyItemPositionBackward(firstVisibleItemPosition)
