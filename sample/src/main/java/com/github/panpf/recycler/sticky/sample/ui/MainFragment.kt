@@ -19,54 +19,54 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
         Link(
             "Linear - Position",
-            SampleFragment.create(way = SampleFragment.Way.POSITION)
+            LinearFragment.create(way = LinearFragment.Way.POSITION)
         ),
 
         Link(
             "Linear - ItemType",
-            SampleFragment.create(way = SampleFragment.Way.ITEM_TYPE)
+            LinearFragment.create(way = LinearFragment.Way.ITEM_TYPE)
         ),
 
         Link(
-            "Linear - AssemblyItemFactory",
-            AssemblySampleFragment.create(stickyItemClickable = false)
+            "Linear - Assembly",
+            LinearAssemblyFragment.create(stickyItemClickable = false)
         ),
 
         Link(
             "Linear - Clickable",
-            AssemblySampleFragment.create(stickyItemClickable = true)
+            LinearAssemblyFragment.create(stickyItemClickable = true)
         ),
 
         Link(
             "Linear - Horizontal",
-            HorAssemblySampleFragment.create(stickyItemClickable = false)
+            LinearAssemblyHorFragment.create(stickyItemClickable = false)
         ),
 
         Link(
             "Linear - Horizontal - Clickable",
-            HorAssemblySampleFragment.create(stickyItemClickable = true)
+            LinearAssemblyHorFragment.create(stickyItemClickable = true)
         ),
 
         ListSeparator("Grid"),
 
         Link(
             "Grid",
-            GridSampleFragment.create(stickyItemClickable = false)
+            GridAssemblyFragment.create(stickyItemClickable = false)
         ),
 
         Link(
             "Grid - Clickable",
-            GridSampleFragment.create(stickyItemClickable = true)
+            GridAssemblyFragment.create(stickyItemClickable = true)
         ),
 
         Link(
             "Grid - Horizontal",
-            HorGridSampleFragment.create(stickyItemClickable = false)
+            GridAssemblyHorFragment.create(stickyItemClickable = false)
         ),
 
         Link(
             "Grid - Horizontal - Clickable",
-            HorGridSampleFragment.create(stickyItemClickable = true)
+            GridAssemblyHorFragment.create(stickyItemClickable = true)
         ),
     )
 

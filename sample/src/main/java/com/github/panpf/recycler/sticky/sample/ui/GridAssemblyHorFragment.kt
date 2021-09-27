@@ -39,10 +39,10 @@ import com.github.panpf.recycler.sticky.sample.vm.MenuViewModel
 import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
-class HorGridSampleFragment : BaseBindingFragment<FragmentRecyclerHorBinding>() {
+class GridAssemblyHorFragment : BaseBindingFragment<FragmentRecyclerHorBinding>() {
 
     companion object {
-        fun create(stickyItemClickable: Boolean = false) = HorGridSampleFragment().apply {
+        fun create(stickyItemClickable: Boolean = false) = GridAssemblyHorFragment().apply {
             arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
         }
     }

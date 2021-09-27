@@ -19,7 +19,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,17 +26,17 @@ import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.recycler.sticky.StickyItemDecoration
 import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithItemFactory
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
-import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerHorBinding
-import com.github.panpf.recycler.sticky.sample.item.AppHorItemFactory
-import com.github.panpf.recycler.sticky.sample.item.AppsOverviewHorItemFactory
-import com.github.panpf.recycler.sticky.sample.item.ListSeparatorHorItemFactory
+import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
+import com.github.panpf.recycler.sticky.sample.item.AppItemFactory
+import com.github.panpf.recycler.sticky.sample.item.AppsOverviewItemFactory
+import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
 import com.github.panpf.recycler.sticky.sample.vm.MenuViewModel
 import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
 
-class HorAssemblySampleFragment : BaseBindingFragment<FragmentRecyclerHorBinding>() {
+class LinearAssemblyFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     companion object {
-        fun create(stickyItemClickable: Boolean = false) = HorAssemblySampleFragment().apply {
+        fun create(stickyItemClickable: Boolean = false) = LinearAssemblyFragment().apply {
             arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
         }
     }
@@ -54,35 +53,28 @@ class HorAssemblySampleFragment : BaseBindingFragment<FragmentRecyclerHorBinding
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?
-    ): FragmentRecyclerHorBinding {
-        return FragmentRecyclerHorBinding.inflate(inflater, parent, false)
+    ): FragmentRecyclerBinding {
+        return FragmentRecyclerBinding.inflate(inflater, parent, false)
     }
 
-    override fun onInitData(binding: FragmentRecyclerHorBinding, savedInstanceState: Bundle?) {
-        binding.recyclerHorStickyContainer.updateLayoutParams<ViewGroup.LayoutParams> {
-            width = ViewGroup.LayoutParams.WRAP_CONTENT
-            height = ViewGroup.LayoutParams.MATCH_PARENT
-        }
-
+    override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
         val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
             listOf(
-                AppHorItemFactory(),
-                ListSeparatorHorItemFactory(),
-                AppsOverviewHorItemFactory()
+                AppItemFactory(),
+                ListSeparatorItemFactory(),
+                AppsOverviewItemFactory()
             )
         )
-        binding.recyclerHorRecycler.apply {
+        binding.recyclerRecycler.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(
                 requireContext(),
-                LinearLayoutManager.HORIZONTAL,
+                LinearLayoutManager.VERTICAL,
                 false
             )
-            addAssemblyStickyItemDecorationWithItemFactory(
-                ListSeparatorHorItemFactory::class
-            ) {
+            addAssemblyStickyItemDecorationWithItemFactory(ListSeparatorItemFactory::class) {
                 if (stickyItemClickable) {
-                    showInContainer(binding.recyclerHorStickyContainer)
+                    showInContainer(binding.recyclerStickyContainer)
                 }
             }
         }
@@ -96,7 +88,7 @@ class HorAssemblySampleFragment : BaseBindingFragment<FragmentRecyclerHorBinding
             when (it?.id) {
                 1 -> {
                     disabledScrollUpStickyItem = !disabledScrollUpStickyItem
-                    binding.recyclerHorRecycler.apply {
+                    binding.recyclerRecycler.apply {
                         (getItemDecorationAt(0) as StickyItemDecoration)
                             .disabledScrollUpStickyItem = disabledScrollUpStickyItem
                         postInvalidate()
@@ -106,7 +98,7 @@ class HorAssemblySampleFragment : BaseBindingFragment<FragmentRecyclerHorBinding
                 2 -> {
                     invisibleOriginItemWhenStickyItemShowing =
                         !invisibleOriginItemWhenStickyItemShowing
-                    binding.recyclerHorRecycler.apply {
+                    binding.recyclerRecycler.apply {
                         (getItemDecorationAt(0) as StickyItemDecoration)
                             .invisibleOriginItemWhenStickyItemShowing =
                             invisibleOriginItemWhenStickyItemShowing

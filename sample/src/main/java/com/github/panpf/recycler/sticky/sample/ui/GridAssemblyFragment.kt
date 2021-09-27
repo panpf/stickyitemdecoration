@@ -21,30 +21,34 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
+import com.github.panpf.assemblyadapter.recycler.ItemSpan
+import com.github.panpf.assemblyadapter.recycler.divider.Divider
+import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
 import com.github.panpf.recycler.sticky.StickyItemDecoration
-import com.github.panpf.recycler.sticky.addStickyItemDecorationWithItemType
-import com.github.panpf.recycler.sticky.addStickyItemDecorationWithPosition
+import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithItemFactory
 import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
-import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
-import com.github.panpf.recycler.sticky.sample.item.AppListAdapter
+import com.github.panpf.recycler.sticky.sample.item.AppCardGridItemFactory
+import com.github.panpf.recycler.sticky.sample.item.AppsOverviewItemFactory
+import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
 import com.github.panpf.recycler.sticky.sample.vm.MenuViewModel
 import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
+import com.github.panpf.tools4a.dimen.ktx.dp2px
 
-class SampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
+class GridAssemblyFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     companion object {
-        fun create(way: Way): SampleFragment = SampleFragment().apply {
-            arguments = bundleOf("way" to way.name)
+        fun create(stickyItemClickable: Boolean = false) = GridAssemblyFragment().apply {
+            arguments = bundleOf("stickyItemClickable" to stickyItemClickable)
         }
     }
 
-    enum class Way {
-        POSITION, ITEM_TYPE
+    private val stickyItemClickable by lazy {
+        arguments?.getBoolean("stickyItemClickable") ?: false
     }
-
-    private val way by lazy { Way.valueOf(arguments?.getString("way") ?: Way.POSITION.name) }
 
     private val viewModel by viewModels<PinyinFlatAppsViewModel>()
     private val menuViewModel by activityViewModels<MenuViewModel>()
@@ -59,31 +63,53 @@ class SampleFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
     }
 
     override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
-        binding.recyclerRecycler.apply {
-            adapter = AppListAdapter()
-            layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.VERTICAL,
-                false
+        val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
+            listOf(
+                AppCardGridItemFactory(),
+                ListSeparatorItemFactory(),
+                AppsOverviewItemFactory()
             )
+        )
+        binding.recyclerRecycler.apply {
+            adapter = recyclerAdapter
+            layoutManager = AssemblyGridLayoutManager(
+                requireContext(),
+                3,
+                GridLayoutManager.VERTICAL,
+                false,
+                mapOf(
+                    AppsOverviewItemFactory::class to ItemSpan.fullSpan(),
+                    ListSeparatorItemFactory::class to ItemSpan.fullSpan()
+                )
+            )
+            addAssemblyStickyItemDecorationWithItemFactory(ListSeparatorItemFactory::class) {
+                if (stickyItemClickable) {
+                    showInContainer(binding.recyclerStickyContainer)
+                }
+            }
+            addAssemblyGridDividerItemDecoration {
+                divider(Divider.space(16.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewItemFactory::class)
+                }
+                footerDivider(Divider.space(20.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewItemFactory::class)
+                    disableByItemFactoryClass(ListSeparatorItemFactory::class)
+                }
+                sideDivider(Divider.space(16.dp2px))
+                sideHeaderDivider(Divider.space(20.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewItemFactory::class)
+                    disableByItemFactoryClass(ListSeparatorItemFactory::class)
+                }
+                sideFooterDivider(Divider.space(20.dp2px)) {
+                    disableByItemFactoryClass(AppsOverviewItemFactory::class)
+                    disableByItemFactoryClass(ListSeparatorItemFactory::class)
+                }
+            }
         }
 
         viewModel.pinyinFlatAppListData.observe(viewLifecycleOwner) {
             val dataList = listOf(viewModel.appsOverviewData.value!!).plus(it ?: emptyList())
-            if (way == Way.POSITION) {
-                val listSeparatorPositionList = ArrayList<Int>()
-                dataList.forEachIndexed { index, item ->
-                    if (item is ListSeparator) {
-                        listSeparatorPositionList.add(index)
-                    }
-                }
-                binding.recyclerRecycler.addStickyItemDecorationWithPosition(
-                    listSeparatorPositionList
-                )
-            } else {
-                binding.recyclerRecycler.addStickyItemDecorationWithItemType(1)
-            }
-            (binding.recyclerRecycler.adapter!! as AppListAdapter).submitList(dataList)
+            recyclerAdapter.submitList(dataList)
         }
 
         menuViewModel.menuClickEvent.listen(viewLifecycleOwner) {
