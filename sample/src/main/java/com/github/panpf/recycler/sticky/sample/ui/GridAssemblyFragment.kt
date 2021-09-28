@@ -66,7 +66,7 @@ class GridAssemblyFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
         val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
             listOf(
                 AppCardGridItemFactory(),
-                ListSeparatorItemFactory(),
+                ListSeparatorItemFactory(binding.recyclerRecycler),
                 AppsOverviewItemFactory()
             )
         )

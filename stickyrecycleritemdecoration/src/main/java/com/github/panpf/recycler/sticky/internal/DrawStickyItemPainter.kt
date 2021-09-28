@@ -28,6 +28,7 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
 
     private var lastStickyItemPosition: Int? = null
     private var lastStickyItemView: View? = null
+    private var lastStickyItemType: Int? = null
 
     override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         val adapter = getAdapter(parent)?.takeIf { it.itemCount > 0 } ?: return
@@ -52,12 +53,13 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
         } else {
             lastStickyItemPosition = null
             lastStickyItemView = null
+            lastStickyItemType = null
             logBuilder?.append(". NoStickyItem")
         }
         hiddenOriginItemView(parent, firstVisibleItemPosition, stickyItemPosition)
 
         logBuilder?.apply {
-            Log.d("StickyItemDraw", this.toString())
+            Log.d("DrawStickyItem", this.toString())
         }
     }
 
@@ -69,8 +71,12 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
     ): View {
         val lastStickyItemView = lastStickyItemView
         val lastStickItemPosition = lastStickyItemPosition
-        return if (lastStickyItemView == null || stickItemPosition != lastStickItemPosition) {
-            val stickyItemType = adapter.getItemViewType(stickItemPosition)
+        val lastStickyItemType = lastStickyItemType
+        val stickyItemType = adapter.getItemViewType(stickItemPosition)
+        return if (lastStickyItemView == null
+            || stickItemPosition != lastStickItemPosition
+            || stickyItemType != lastStickyItemType
+        ) {
             val stickyItemViewHolder = viewHolderCachePool[stickyItemType]
                 ?: adapter.createViewHolder(parent, stickyItemType).apply {
                     viewHolderCachePool.put(stickyItemType, this)
@@ -115,6 +121,7 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
 
             this@DrawStickyItemPainter.lastStickyItemPosition = stickItemPosition
             this@DrawStickyItemPainter.lastStickyItemView = stickyItemView
+            this@DrawStickyItemPainter.lastStickyItemType = stickyItemType
             logBuilder?.append(". New")
             stickyItemView
         } else {
@@ -189,5 +196,6 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
         super.reset()
         lastStickyItemPosition = null
         lastStickyItemView = null
+        lastStickyItemType = null
     }
 }

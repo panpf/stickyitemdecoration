@@ -20,12 +20,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
 import com.github.panpf.recycler.sticky.sample.databinding.ItemListSeparatorBinding
 
-class ListSeparatorItemFactory(val hiddenTapMe: Boolean = false)
-    : BindingItemFactory<ListSeparator, ItemListSeparatorBinding>(ListSeparator::class) {
+class ListSeparatorItemFactory(
+    private val recyclerView: RecyclerView?,
+    private val hiddenTapMe: Boolean = false,
+) : BindingItemFactory<ListSeparator, ItemListSeparatorBinding>(ListSeparator::class) {
 
     override fun createItemViewBinding(
         context: Context, inflater: LayoutInflater, parent: ViewGroup
@@ -41,6 +44,7 @@ class ListSeparatorItemFactory(val hiddenTapMe: Boolean = false)
         binding.listSeparatorItemActionText.apply {
             setOnClickListener {
                 Toast.makeText(context, "You tap me", Toast.LENGTH_LONG).show()
+                recyclerView?.adapter?.notifyItemChanged(item.absoluteAdapterPosition)
             }
             isVisible = !hiddenTapMe
         }

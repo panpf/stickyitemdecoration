@@ -30,6 +30,7 @@ class ContainerStickyItemPainter(
 
     private var lastStickyItemPosition: Int? = null
     private var lastStickyItemView: View? = null
+    private var lastStickyItemType: Int? = null
 
     init {
         stickyItemContainer.isClickable = true
@@ -53,6 +54,7 @@ class ContainerStickyItemPainter(
         } else {
             lastStickyItemPosition = null
             lastStickyItemView = null
+            lastStickyItemType = null
             stickyItemContainer.apply {
                 if (childCount > 0) {
                     removeAllViews()
@@ -64,7 +66,7 @@ class ContainerStickyItemPainter(
         hiddenOriginItemView(parent, firstVisibleItemPosition, stickyItemPosition)
 
         logBuilder?.apply {
-            Log.d("ContainerStickyItemDraw", this.toString())
+            Log.d("ContainerStickyItem", this.toString())
         }
     }
 
@@ -75,8 +77,12 @@ class ContainerStickyItemPainter(
     ): View {
         val lastStickyItemView = lastStickyItemView
         val lastStickItemPosition = lastStickyItemPosition
-        return if (lastStickyItemView == null || stickItemPosition != lastStickItemPosition) {
-            val stickyItemType = adapter.getItemViewType(stickItemPosition)
+        val lastStickyItemType = lastStickyItemType
+        val stickyItemType = adapter.getItemViewType(stickItemPosition)
+        return if (lastStickyItemView == null
+            || stickItemPosition != lastStickItemPosition
+            || stickyItemType != lastStickyItemType
+        ) {
             val stickyItemViewHolder = viewHolderCachePool[stickyItemType]
                 ?: adapter.createViewHolder(stickyItemContainer, stickyItemType).apply {
                     viewHolderCachePool.put(stickyItemType, this)
@@ -93,6 +99,7 @@ class ContainerStickyItemPainter(
 
             this@ContainerStickyItemPainter.lastStickyItemPosition = stickItemPosition
             this@ContainerStickyItemPainter.lastStickyItemView = stickyItemView
+            this@ContainerStickyItemPainter.lastStickyItemType = stickyItemType
             logBuilder?.append(". New")
             stickyItemView
         } else {
@@ -157,6 +164,7 @@ class ContainerStickyItemPainter(
         super.reset()
         lastStickyItemView = null
         lastStickyItemPosition = null
+        lastStickyItemType = null
         if (stickyItemContainer.childCount > 0) {
             stickyItemContainer.removeAllViews()
         }

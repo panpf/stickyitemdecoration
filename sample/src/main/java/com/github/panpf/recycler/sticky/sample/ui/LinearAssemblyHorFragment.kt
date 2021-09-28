@@ -67,7 +67,7 @@ class LinearAssemblyHorFragment : BaseBindingFragment<FragmentRecyclerHorBinding
         val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
             listOf(
                 AppHorItemFactory(),
-                ListSeparatorHorItemFactory(),
+                ListSeparatorHorItemFactory(binding.recyclerHorRecycler),
                 AppsOverviewHorItemFactory()
             )
         )

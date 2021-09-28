@@ -65,7 +65,7 @@ class StaggeredGridAssemblyFragment : BaseBindingFragment<FragmentRecyclerBindin
         val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
             listOf(
                 AppCardGridItemFactory(),
-                ListSeparatorItemFactory(),
+                ListSeparatorItemFactory(binding.recyclerRecycler),
                 AppsOverviewItemFactory()
             )
         )

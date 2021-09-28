@@ -22,17 +22,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.github.panpf.assemblyadapter.recycler.SimpleAdapterDataObserver
 import com.github.panpf.recycler.sticky.StickyItemDecoration
 
 abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyItemDecoration) {
 
     protected val viewHolderCachePool = SparseArray<RecyclerView.ViewHolder>()
     private var cacheAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null
-    private val simpleAdapterDataObserver = SimpleAdapterDataObserver {
-        reset()
-    }
-
     private var invisibleItemView: View? = null
     private var cacheInto: IntArray? = null
 
@@ -81,10 +76,6 @@ abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyIte
             val newAdapter = parent.adapter
             if (oldAdapter !== newAdapter) {
                 reset()
-                try {
-                    newAdapter?.registerAdapterDataObserver(simpleAdapterDataObserver)
-                } catch (e: Exception) {
-                }
                 this.cacheAdapter = newAdapter
             }
             newAdapter

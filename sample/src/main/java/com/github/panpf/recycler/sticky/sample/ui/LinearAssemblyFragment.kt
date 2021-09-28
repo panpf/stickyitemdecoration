@@ -22,6 +22,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.recycler.sticky.StickyItemDecoration
 import com.github.panpf.recycler.sticky.assemblyadapter4.addAssemblyStickyItemDecorationWithItemFactory
@@ -61,7 +62,7 @@ class LinearAssemblyFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
         val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
             listOf(
                 AppItemFactory(),
-                ListSeparatorItemFactory(),
+                ListSeparatorItemFactory(binding.recyclerRecycler),
                 AppsOverviewItemFactory()
             )
         )

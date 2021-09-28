@@ -72,7 +72,7 @@ class GridAssemblyHorFragment : BaseBindingFragment<FragmentRecyclerHorBinding>(
         val recyclerAdapter = AssemblyRecyclerAdapter<Any>(
             listOf(
                 AppCardGridHorItemFactory(),
-                ListSeparatorHorItemFactory(),
+                ListSeparatorHorItemFactory(binding.recyclerHorRecycler),
                 AppsOverviewHorItemFactory()
             )
         )
