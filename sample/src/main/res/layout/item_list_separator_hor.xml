@@ -30,7 +30,7 @@
         <TextView
             android:id="@+id/listSeparatorHorItemActionText"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:gravity="end|right"
             android:paddingStart="29dp"
             android:paddingLeft="29dp"
