@@ -72,7 +72,12 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
         val lastParent = lastParent ?: return
         val stickyItemType = adapter.getItemViewType(lastStickyItemPosition)
         if (stickyItemType == lastStickyItemType) {
-            adapter.bindViewHolder(lastStickyItemViewHolder, lastStickyItemPosition)
+            updateViewHolderData(
+                lastStickyItemViewHolder,
+                lastStickyItemPosition,
+                lastParent,
+                adapter
+            )
             measureAndLayout(lastStickyItemViewHolder.itemView, lastParent)
         }
     }
@@ -98,7 +103,7 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
                 ?: adapter.createViewHolder(parent, stickyItemType).apply {
                     viewHolderCachePool.put(stickyItemType, this)
                 }
-            adapter.bindViewHolder(stickyItemViewHolder, stickItemPosition)
+            updateViewHolderData(stickyItemViewHolder, stickItemPosition, parent, adapter)
             measureAndLayout(stickyItemViewHolder.itemView, parent)
 
             this@DrawStickyItemPainter.lastStickyItemPosition = stickItemPosition

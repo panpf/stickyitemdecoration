@@ -31,6 +31,7 @@ class ContainerStickyItemPainter(
     private var lastStickyItemPosition: Int? = null
     private var lastStickyItemViewHolder: RecyclerView.ViewHolder? = null
     private var lastStickyItemType: Int? = null
+    private var lastParent: RecyclerView? = null
 
     init {
         stickyItemContainer.isClickable = true
@@ -47,7 +48,7 @@ class ContainerStickyItemPainter(
         val stickyItemPosition = findStickyItemPositionBackward(firstVisibleItemPosition)
         if (stickyItemPosition != null) {
             logBuilder?.append(". StickyItem=$stickyItemPosition")
-            val stickyItemView = showStickyItemView(stickyItemPosition, adapter, logBuilder)
+            val stickyItemView = showStickyItemView(parent, adapter, stickyItemPosition, logBuilder)
             offsetStickyItemView(
                 parent, firstVisibleItemPosition, stickyItemPosition, stickyItemView, logBuilder
             )
@@ -55,6 +56,7 @@ class ContainerStickyItemPainter(
             lastStickyItemPosition = null
             lastStickyItemViewHolder = null
             lastStickyItemType = null
+            lastParent = null
             stickyItemContainer.apply {
                 if (childCount > 0) {
                     removeAllViews()
@@ -74,22 +76,32 @@ class ContainerStickyItemPainter(
         val lastStickyItemPosition = lastStickyItemPosition ?: return
         val lastStickyItemViewHolder = lastStickyItemViewHolder ?: return
         val lastStickyItemType = lastStickyItemType ?: return
+        val lastParent = lastParent ?: return
         val stickyItemType = adapter.getItemViewType(lastStickyItemPosition)
         if (stickyItemType == lastStickyItemType) {
-            adapter.bindViewHolder(lastStickyItemViewHolder, lastStickyItemPosition)
+            updateViewHolderData(
+                lastStickyItemViewHolder,
+                lastStickyItemPosition,
+                lastParent,
+                adapter
+            )
         }
     }
 
     private fun showStickyItemView(
-        stickItemPosition: Int,
+        parent: RecyclerView,
         adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        stickItemPosition: Int,
         logBuilder: StringBuilder?
     ): View {
         val lastStickyItemViewHolder = lastStickyItemViewHolder
         val lastStickItemPosition = lastStickyItemPosition
         val lastStickyItemType = lastStickyItemType
+        val lastParent = lastParent
         val stickyItemType = adapter.getItemViewType(stickItemPosition)
-        return if (lastStickyItemViewHolder == null
+        return if (
+            lastStickyItemViewHolder == null
+            || lastParent == null
             || stickItemPosition != lastStickItemPosition
             || stickyItemType != lastStickyItemType
         ) {
@@ -97,7 +109,8 @@ class ContainerStickyItemPainter(
                 ?: adapter.createViewHolder(stickyItemContainer, stickyItemType).apply {
                     viewHolderCachePool.put(stickyItemType, this)
                 }
-            adapter.bindViewHolder(stickyItemViewHolder, stickItemPosition)
+            updateViewHolderData(stickyItemViewHolder, stickItemPosition, parent, adapter)
+
             stickyItemContainer.apply {
                 if (childCount > 0) {
                     removeAllViews()
@@ -109,6 +122,7 @@ class ContainerStickyItemPainter(
             this@ContainerStickyItemPainter.lastStickyItemPosition = stickItemPosition
             this@ContainerStickyItemPainter.lastStickyItemViewHolder = stickyItemViewHolder
             this@ContainerStickyItemPainter.lastStickyItemType = stickyItemType
+            this@ContainerStickyItemPainter.lastParent = parent
             logBuilder?.append(". New")
             stickyItemViewHolder.itemView
         } else {
@@ -174,6 +188,7 @@ class ContainerStickyItemPainter(
         lastStickyItemViewHolder = null
         lastStickyItemPosition = null
         lastStickyItemType = null
+        lastParent = null
         if (stickyItemContainer.childCount > 0) {
             stickyItemContainer.removeAllViews()
         }

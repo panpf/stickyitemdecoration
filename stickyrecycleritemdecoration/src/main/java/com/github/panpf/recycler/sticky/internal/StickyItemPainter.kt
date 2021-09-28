@@ -18,14 +18,12 @@ package com.github.panpf.recycler.sticky.internal
 import android.graphics.Canvas
 import android.util.SparseArray
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.*
+import com.github.panpf.assemblyadapter.recycler.ConcatAdapterLocalHelper
 import com.github.panpf.assemblyadapter.recycler.SimpleAdapterDataObserver
 import com.github.panpf.recycler.sticky.StickyItemDecoration
 
-abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyItemDecoration) {
+abstract class StickyItemPainter(private val stickyItemDecoration: StickyItemDecoration) {
 
     protected val viewHolderCachePool = SparseArray<RecyclerView.ViewHolder>()
     private var cacheAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null
@@ -34,6 +32,7 @@ abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyIte
     private val simpleAdapterDataObserver = SimpleAdapterDataObserver {
         cacheAdapter?.let { it1 -> onAdapterDataChanged(it1) }
     }
+    private val concatAdapterLocalHelper by lazy { ConcatAdapterLocalHelper() }
 
     var disabledScrollUpStickyItem = false
         set(value) {
@@ -49,6 +48,29 @@ abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyIte
 
     abstract fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State)
     abstract fun onAdapterDataChanged(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>)
+
+    protected fun updateViewHolderData(
+        viewHolder: RecyclerView.ViewHolder,
+        position: Int,
+        parent: RecyclerView,
+        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+    ) {
+        val localAdapter =
+            concatAdapterLocalHelper.findLocalAdapterAndPosition(adapter, position).first
+        viewHolder.apply {
+            // Ensure that the ViewHolder getBindingAdapterPosition() and getAbsoluteAdapterPosition methods are valid
+            positionCompat = position
+            // Ensure that the ViewHolder getBindingAdapterPosition() and getAbsoluteAdapterPosition methods are valid
+            ownerRecyclerViewCompat = parent
+            // Ensure that the ViewHolder getBindingAdapterPosition() and getAbsoluteAdapterPosition methods are valid
+            if (bindingAdapterCompat == null) {
+                bindingAdapterCompat = localAdapter
+                rootBindInit()
+            }
+        }
+        // Ensure that the ViewHolder getBindingAdapterPosition() and getAbsoluteAdapterPosition methods are valid
+        adapter.bindViewHolder(viewHolder, position)
+    }
 
     protected fun hiddenOriginItemView(
         parent: RecyclerView,
@@ -97,7 +119,7 @@ abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyIte
         val adapter = getAdapter()
         if (adapter != null && formPosition >= 0) {
             for (position in formPosition downTo 0) {
-                if (baseStickyItemDecoration.isStickyItemByPosition(adapter, position)) {
+                if (stickyItemDecoration.isStickyItemByPosition(adapter, position)) {
                     return position
                 }
             }
@@ -114,7 +136,7 @@ abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyIte
             val lastVisibleItemPosition = findLastVisibleItemPosition(recyclerView)
             if (lastVisibleItemPosition >= 0) {
                 for (position in formPosition..lastVisibleItemPosition) {
-                    if (baseStickyItemDecoration.isStickyItemByPosition(adapter, position)) {
+                    if (stickyItemDecoration.isStickyItemByPosition(adapter, position)) {
                         return position
                     }
                 }
