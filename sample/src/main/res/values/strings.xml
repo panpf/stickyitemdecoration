@@ -4,4 +4,5 @@
     <string name="apps_overview_item">Apps: %d (User: %d. Group: %d)</string>
     <string name="apps_overview_item_hor">Apps: %d\nUser: %d\nGroup: %d</string>
     <string name="button_tap_me">TAP ME</string>
+    <string name="button_tap_me_count">TAP ME (%d)</string>
 </resources>

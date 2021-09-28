@@ -29,7 +29,7 @@ class ContainerStickyItemPainter(
 ) : StickyItemPainter(baseStickyItemDecoration) {
 
     private var lastStickyItemPosition: Int? = null
-    private var lastStickyItemView: View? = null
+    private var lastStickyItemViewHolder: RecyclerView.ViewHolder? = null
     private var lastStickyItemType: Int? = null
 
     init {
@@ -53,7 +53,7 @@ class ContainerStickyItemPainter(
             )
         } else {
             lastStickyItemPosition = null
-            lastStickyItemView = null
+            lastStickyItemViewHolder = null
             lastStickyItemType = null
             stickyItemContainer.apply {
                 if (childCount > 0) {
@@ -70,16 +70,26 @@ class ContainerStickyItemPainter(
         }
     }
 
+    override fun onAdapterDataChanged(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+        val lastStickyItemPosition = lastStickyItemPosition ?: return
+        val lastStickyItemViewHolder = lastStickyItemViewHolder ?: return
+        val lastStickyItemType = lastStickyItemType ?: return
+        val stickyItemType = adapter.getItemViewType(lastStickyItemPosition)
+        if (stickyItemType == lastStickyItemType) {
+            adapter.bindViewHolder(lastStickyItemViewHolder, lastStickyItemPosition)
+        }
+    }
+
     private fun showStickyItemView(
         stickItemPosition: Int,
         adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
         logBuilder: StringBuilder?
     ): View {
-        val lastStickyItemView = lastStickyItemView
+        val lastStickyItemViewHolder = lastStickyItemViewHolder
         val lastStickItemPosition = lastStickyItemPosition
         val lastStickyItemType = lastStickyItemType
         val stickyItemType = adapter.getItemViewType(stickItemPosition)
-        return if (lastStickyItemView == null
+        return if (lastStickyItemViewHolder == null
             || stickItemPosition != lastStickItemPosition
             || stickyItemType != lastStickyItemType
         ) {
@@ -88,23 +98,22 @@ class ContainerStickyItemPainter(
                     viewHolderCachePool.put(stickyItemType, this)
                 }
             adapter.bindViewHolder(stickyItemViewHolder, stickItemPosition)
-            val stickyItemView = stickyItemViewHolder.itemView
             stickyItemContainer.apply {
                 if (childCount > 0) {
                     removeAllViews()
                 }
-                addView(stickyItemView)
+                addView(stickyItemViewHolder.itemView)
                 visibility = View.VISIBLE
             }
 
             this@ContainerStickyItemPainter.lastStickyItemPosition = stickItemPosition
-            this@ContainerStickyItemPainter.lastStickyItemView = stickyItemView
+            this@ContainerStickyItemPainter.lastStickyItemViewHolder = stickyItemViewHolder
             this@ContainerStickyItemPainter.lastStickyItemType = stickyItemType
             logBuilder?.append(". New")
-            stickyItemView
+            stickyItemViewHolder.itemView
         } else {
             logBuilder?.append(". NoChange")
-            lastStickyItemView
+            lastStickyItemViewHolder.itemView
         }
     }
 
@@ -162,7 +171,7 @@ class ContainerStickyItemPainter(
 
     override fun reset() {
         super.reset()
-        lastStickyItemView = null
+        lastStickyItemViewHolder = null
         lastStickyItemPosition = null
         lastStickyItemType = null
         if (stickyItemContainer.childCount > 0) {

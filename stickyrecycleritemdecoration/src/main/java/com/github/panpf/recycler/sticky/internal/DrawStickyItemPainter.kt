@@ -27,8 +27,9 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
     StickyItemPainter(stickyItemDecoration) {
 
     private var lastStickyItemPosition: Int? = null
-    private var lastStickyItemView: View? = null
+    private var lastStickyItemViewHolder: RecyclerView.ViewHolder? = null
     private var lastStickyItemType: Int? = null
+    private var lastParent: RecyclerView? = null
 
     override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         val adapter = getAdapter(parent)?.takeIf { it.itemCount > 0 } ?: return
@@ -52,8 +53,9 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
             showStickyItemView(canvas, parent, stickyItemView, stickyItemViewOffset)
         } else {
             lastStickyItemPosition = null
-            lastStickyItemView = null
+            lastStickyItemViewHolder = null
             lastStickyItemType = null
+            lastParent = null
             logBuilder?.append(". NoStickyItem")
         }
         hiddenOriginItemView(parent, firstVisibleItemPosition, stickyItemPosition)
@@ -63,17 +65,32 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
         }
     }
 
+    override fun onAdapterDataChanged(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+        val lastStickyItemPosition = lastStickyItemPosition ?: return
+        val lastStickyItemViewHolder = lastStickyItemViewHolder ?: return
+        val lastStickyItemType = lastStickyItemType ?: return
+        val lastParent = lastParent ?: return
+        val stickyItemType = adapter.getItemViewType(lastStickyItemPosition)
+        if (stickyItemType == lastStickyItemType) {
+            adapter.bindViewHolder(lastStickyItemViewHolder, lastStickyItemPosition)
+            measureAndLayout(lastStickyItemViewHolder.itemView, lastParent)
+        }
+    }
+
     private fun prepareStickyItemView(
         parent: RecyclerView,
         adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
         stickItemPosition: Int,
         logBuilder: StringBuilder?,
     ): View {
-        val lastStickyItemView = lastStickyItemView
+        val lastStickyItemViewHolder = lastStickyItemViewHolder
         val lastStickItemPosition = lastStickyItemPosition
         val lastStickyItemType = lastStickyItemType
+        val lastParent = lastParent
         val stickyItemType = adapter.getItemViewType(stickItemPosition)
-        return if (lastStickyItemView == null
+        return if (
+            lastStickyItemViewHolder == null
+            || lastParent == null
             || stickItemPosition != lastStickItemPosition
             || stickyItemType != lastStickyItemType
         ) {
@@ -82,51 +99,17 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
                     viewHolderCachePool.put(stickyItemType, this)
                 }
             adapter.bindViewHolder(stickyItemViewHolder, stickItemPosition)
-            val stickyItemView = stickyItemViewHolder.itemView.apply {
-                val itemLayoutParams = layoutParams as RecyclerView.LayoutParams
-                val layoutMarginStart = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    itemLayoutParams.marginStart.takeIf { it != 0 } ?: itemLayoutParams.leftMargin
-                } else {
-                    itemLayoutParams.leftMargin
-                }
-                val layoutMarginEnd = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    itemLayoutParams.marginEnd.takeIf { it != 0 } ?: itemLayoutParams.rightMargin
-                } else {
-                    itemLayoutParams.rightMargin
-                }
-                val itemWidthMeasureSpec = ViewGroup.getChildMeasureSpec(
-                    View.MeasureSpec.makeMeasureSpec(
-                        parent.width,
-                        if (isVertical(parent)) View.MeasureSpec.EXACTLY else View.MeasureSpec.UNSPECIFIED
-                    ),
-                    parent.paddingLeft + parent.paddingRight + layoutMarginStart + layoutMarginEnd,
-                    itemLayoutParams.width
-                )
-                val itemHeightMeasureSpec = ViewGroup.getChildMeasureSpec(
-                    View.MeasureSpec.makeMeasureSpec(
-                        parent.height,
-                        if (isVertical(parent)) View.MeasureSpec.UNSPECIFIED else View.MeasureSpec.EXACTLY
-                    ),
-                    parent.paddingTop + parent.paddingBottom + itemLayoutParams.topMargin + itemLayoutParams.bottomMargin,
-                    itemLayoutParams.height
-                )
-                measure(itemWidthMeasureSpec, itemHeightMeasureSpec)
-                layout(
-                    parent.paddingLeft + layoutMarginStart,
-                    parent.paddingTop + itemLayoutParams.topMargin,
-                    parent.paddingLeft + layoutMarginStart + measuredWidth,
-                    parent.paddingTop + itemLayoutParams.topMargin + measuredHeight
-                )
-            }
+            measureAndLayout(stickyItemViewHolder.itemView, parent)
 
             this@DrawStickyItemPainter.lastStickyItemPosition = stickItemPosition
-            this@DrawStickyItemPainter.lastStickyItemView = stickyItemView
+            this@DrawStickyItemPainter.lastStickyItemViewHolder = stickyItemViewHolder
             this@DrawStickyItemPainter.lastStickyItemType = stickyItemType
+            this@DrawStickyItemPainter.lastParent = parent
             logBuilder?.append(". New")
-            stickyItemView
+            stickyItemViewHolder.itemView
         } else {
             logBuilder?.append(". NoChange")
-            lastStickyItemView
+            lastStickyItemViewHolder.itemView
         }
     }
 
@@ -192,10 +175,52 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
         canvas.restore()
     }
 
+    private fun measureAndLayout(itemView: View, parent: RecyclerView) {
+        val itemLayoutParams = itemView.layoutParams as RecyclerView.LayoutParams
+        val layoutMarginStart =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                itemLayoutParams.marginStart.takeIf { it != 0 }
+                    ?: itemLayoutParams.leftMargin
+            } else {
+                itemLayoutParams.leftMargin
+            }
+        val layoutMarginEnd =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                itemLayoutParams.marginEnd.takeIf { it != 0 }
+                    ?: itemLayoutParams.rightMargin
+            } else {
+                itemLayoutParams.rightMargin
+            }
+        val itemWidthMeasureSpec = ViewGroup.getChildMeasureSpec(
+            View.MeasureSpec.makeMeasureSpec(
+                parent.width,
+                if (isVertical(parent)) View.MeasureSpec.EXACTLY else View.MeasureSpec.UNSPECIFIED
+            ),
+            parent.paddingLeft + parent.paddingRight + layoutMarginStart + layoutMarginEnd,
+            itemLayoutParams.width
+        )
+        val itemHeightMeasureSpec = ViewGroup.getChildMeasureSpec(
+            View.MeasureSpec.makeMeasureSpec(
+                parent.height,
+                if (isVertical(parent)) View.MeasureSpec.UNSPECIFIED else View.MeasureSpec.EXACTLY
+            ),
+            parent.paddingTop + parent.paddingBottom + itemLayoutParams.topMargin + itemLayoutParams.bottomMargin,
+            itemLayoutParams.height
+        )
+        itemView.measure(itemWidthMeasureSpec, itemHeightMeasureSpec)
+        itemView.layout(
+            parent.paddingLeft + layoutMarginStart,
+            parent.paddingTop + itemLayoutParams.topMargin,
+            parent.paddingLeft + layoutMarginStart + itemView.measuredWidth,
+            parent.paddingTop + itemLayoutParams.topMargin + itemView.measuredHeight
+        )
+    }
+
     override fun reset() {
         super.reset()
         lastStickyItemPosition = null
-        lastStickyItemView = null
+        lastStickyItemViewHolder = null
         lastStickyItemType = null
+        lastParent = null
     }
 }

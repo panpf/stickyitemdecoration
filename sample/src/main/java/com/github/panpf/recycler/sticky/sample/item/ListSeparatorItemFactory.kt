@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.assemblyadapter.BindingItemFactory
+import com.github.panpf.recycler.sticky.sample.R
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
 import com.github.panpf.recycler.sticky.sample.databinding.ItemListSeparatorBinding
 
@@ -44,6 +45,8 @@ class ListSeparatorItemFactory(
         binding.listSeparatorItemActionText.apply {
             setOnClickListener {
                 Toast.makeText(context, "You tap me", Toast.LENGTH_LONG).show()
+                val data = item.dataOrThrow
+                data.clickCount = data.clickCount + 1
                 recyclerView?.adapter?.notifyItemChanged(item.absoluteAdapterPosition)
             }
             isVisible = !hiddenTapMe
@@ -59,5 +62,12 @@ class ListSeparatorItemFactory(
         data: ListSeparator
     ) {
         binding.listSeparatorItemTitleText.text = data.title
+        val clickCount = data.clickCount
+        if (clickCount > 0) {
+            binding.listSeparatorItemActionText.text =
+                context.getString(R.string.button_tap_me_count, clickCount)
+        } else {
+            binding.listSeparatorItemActionText.text = context.getString(R.string.button_tap_me)
+        }
     }
 }

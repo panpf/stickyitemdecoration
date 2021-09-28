@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.SimpleAdapterDataObserver
 import com.github.panpf.recycler.sticky.StickyItemDecoration
 
 abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyItemDecoration) {
@@ -30,6 +31,9 @@ abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyIte
     private var cacheAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null
     private var invisibleItemView: View? = null
     private var cacheInto: IntArray? = null
+    private val simpleAdapterDataObserver = SimpleAdapterDataObserver {
+        cacheAdapter?.let { it1 -> onAdapterDataChanged(it1) }
+    }
 
     var disabledScrollUpStickyItem = false
         set(value) {
@@ -44,6 +48,7 @@ abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyIte
         }
 
     abstract fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State)
+    abstract fun onAdapterDataChanged(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>)
 
     protected fun hiddenOriginItemView(
         parent: RecyclerView,
@@ -77,6 +82,10 @@ abstract class StickyItemPainter(private val baseStickyItemDecoration: StickyIte
             if (oldAdapter !== newAdapter) {
                 reset()
                 this.cacheAdapter = newAdapter
+                try {
+                    newAdapter?.registerAdapterDataObserver(simpleAdapterDataObserver)
+                } catch (e: Exception) {
+                }
             }
             newAdapter
         } else {

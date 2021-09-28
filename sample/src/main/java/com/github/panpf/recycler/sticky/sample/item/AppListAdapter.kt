@@ -27,7 +27,7 @@ class AppListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val item = when (viewType) {
             0 -> AppsOverviewItemFactory().dispatchCreateItem(parent)
-            1 -> ListSeparatorItemFactory(null).dispatchCreateItem(parent)
+            1 -> ListSeparatorItemFactory(parent as RecyclerView).dispatchCreateItem(parent)
             2 -> AppItemFactory().dispatchCreateItem(parent)
             else -> throw IllegalArgumentException("Unsupported view type: $viewType")
         }
