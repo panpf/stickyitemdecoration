@@ -17,9 +17,9 @@ package com.github.panpf.recycler.sticky.sample.bean
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.os.Parcelable
 import com.github.panpf.assemblyadapter.recycler.DiffKey
+import com.github.panpf.recycler.sticky.sample.util.AppListHelper
 import com.github.promeg.pinyinhelper.Pinyin
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -47,8 +47,7 @@ data class AppsOverview(val count: Int, val userAppCount: Int, val groupCount: I
         fun build(context: Context): AppsOverview {
             var count = 0
             var userAppCount = 0
-            val packageInfoList =
-                context.packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+            val packageInfoList = AppListHelper.getPackageInfoList(context)
             val pinyinGroupCount = packageInfoList.mapNotNull { packageInfo ->
                 context.packageManager.getLaunchIntentForPackage(packageInfo.packageName)
                     ?: return@mapNotNull null

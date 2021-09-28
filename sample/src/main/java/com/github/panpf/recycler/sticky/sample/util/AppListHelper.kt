@@ -16,6 +16,7 @@
 package com.github.panpf.recycler.sticky.sample.util
 
 import android.content.Context
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.github.panpf.recycler.sticky.sample.bean.AppInfo
 import java.util.*
@@ -25,9 +26,19 @@ class AppListHelper(private val context: Context) {
     // Contains the following class types: PinyinGroup、AppInfo
     private val appList = loadInstalledAppList()
 
+    companion object {
+        private var cachePackageInfoList: List<PackageInfo>? = null
+
+        fun getPackageInfoList(context: Context): List<PackageInfo> {
+            return cachePackageInfoList ?:
+            context.packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).apply {
+                cachePackageInfoList = this
+            }
+        }
+    }
+
     private fun loadInstalledAppList(): List<AppInfo> {
-        val packageInfoList =
-            context.packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+        val packageInfoList = getPackageInfoList(context)
         return packageInfoList.mapNotNull { packageInfo ->
             context.packageManager.getLaunchIntentForPackage(packageInfo.packageName)
                 ?: return@mapNotNull null

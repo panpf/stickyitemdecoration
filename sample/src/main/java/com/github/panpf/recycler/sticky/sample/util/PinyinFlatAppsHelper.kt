@@ -16,7 +16,6 @@
 package com.github.panpf.recycler.sticky.sample.util
 
 import android.content.Context
-import android.content.pm.PackageManager
 import com.github.panpf.recycler.sticky.sample.bean.AppInfo
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
 import java.util.*
@@ -27,8 +26,7 @@ class PinyinFlatAppsHelper(private val context: Context) {
     private val pinyinFlatAppList = loadInstalledAppList()
 
     private fun loadInstalledAppList(): List<Any> {
-        val packageInfoList =
-            context.packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+        val packageInfoList = AppListHelper.getPackageInfoList(context)
         val appPackageList = packageInfoList.mapNotNull { packageInfo ->
             context.packageManager.getLaunchIntentForPackage(packageInfo.packageName)
                 ?: return@mapNotNull null
