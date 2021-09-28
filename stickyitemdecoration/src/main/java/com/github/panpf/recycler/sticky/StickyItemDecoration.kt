@@ -20,9 +20,9 @@ import android.util.SparseBooleanArray
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.assemblyadapter.recycler.ConcatAdapterLocalHelper
-import com.github.panpf.recycler.sticky.internal.StickyItemPainter
 import com.github.panpf.recycler.sticky.internal.ContainerStickyItemPainter
 import com.github.panpf.recycler.sticky.internal.DrawStickyItemPainter
+import com.github.panpf.recycler.sticky.internal.StickyItemPainter
 
 /**
  * You can make the item with the specified position or type always displayed at the top of the RecyclerView.
@@ -63,12 +63,18 @@ open class StickyItemDecoration constructor(
         DrawStickyItemPainter(this)
     }
 
+    /**
+     * When sliding is prohibited, the new sticky item replaces the old sticky item
+     */
     var disabledScrollUpStickyItem
         get() = stickyItemPainter.disabledScrollUpStickyItem
         set(value) {
             stickyItemPainter.disabledScrollUpStickyItem = value
         }
 
+    /**
+     * The original item becomes invisible when the sticky item is displayed
+     */
     var invisibleOriginItemWhenStickyItemShowing
         get() = stickyItemPainter.invisibleOriginItemWhenStickyItemShowing
         set(value) {
@@ -135,6 +141,8 @@ open class StickyItemDecoration constructor(
         protected var stickyItemPositionList: List<Int>? = null
         protected var stickyItemTypeList: List<Int>? = null
         protected var stickyItemContainer: ViewGroup? = null
+        protected var disabledScrollUpStickyItem: Boolean = false
+        protected var invisibleOriginItemWhenStickyItemShowing: Boolean = false
 
         /**
          * Set the item at the specified position to always be displayed at the top of the RecyclerView
@@ -176,12 +184,32 @@ open class StickyItemDecoration constructor(
             return this
         }
 
+        /**
+         * When sliding is prohibited, the new sticky item replaces the old sticky item
+         */
+        open fun disabledScrollUpStickyItem(disable: Boolean = true): Builder {
+            this.disabledScrollUpStickyItem = disable
+            return this
+        }
+
+        /**
+         * The original item becomes invisible when the sticky item is displayed
+         */
+        open fun invisibleOriginItemWhenStickyItemShowing(open: Boolean = true): Builder {
+            this.invisibleOriginItemWhenStickyItemShowing = open
+            return this
+        }
+
         open fun build(): StickyItemDecoration {
             return StickyItemDecoration(
                 stickyItemPositionList,
                 stickyItemTypeList,
                 stickyItemContainer
-            )
+            ).apply {
+                disabledScrollUpStickyItem = this@Builder.disabledScrollUpStickyItem
+                invisibleOriginItemWhenStickyItemShowing =
+                    this@Builder.invisibleOriginItemWhenStickyItemShowing
+            }
         }
     }
 }

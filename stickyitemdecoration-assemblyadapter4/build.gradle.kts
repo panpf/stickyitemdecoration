@@ -29,7 +29,7 @@ android {
 }
 
 dependencies {
-    api(project(":stickyrecycleritemdecoration"))
+    api(project(":stickyitemdecoration"))
     api("io.github.panpf.assemblyadapter4:assemblyadapter-recycler:${property("ASSEMBLY_ADAPTER_VERSION")}")
 
     testImplementation("junit:junit:${property("JUNIT")}")

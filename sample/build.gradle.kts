@@ -46,8 +46,8 @@ dependencies {
     implementation("com.google.android.material:material:${property("GOOGLE_MATERIAL")}")
 
     implementation("me.panpf:sketch:${property("SKETCH_VERSION")}")
-    implementation(project(":stickyrecycleritemdecoration"))
-    implementation(project(":stickyrecycleritemdecoration-assemblyadapter4"))
+    implementation(project(":stickyitemdecoration"))
+    implementation(project(":stickyitemdecoration-assemblyadapter4"))
     implementation("com.github.promeg:tinypinyin:${property("TINYPINYIN")}")
     implementation("io.github.panpf.liveevent:liveevent:${property("LIVEEVENT")}")
     implementation("io.github.panpf.tools4a:tools4a-dimen-ktx:${property("TOOLS4A")}")

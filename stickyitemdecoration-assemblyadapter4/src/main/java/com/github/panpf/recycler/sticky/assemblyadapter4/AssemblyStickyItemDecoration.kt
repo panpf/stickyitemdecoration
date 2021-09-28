@@ -69,43 +69,38 @@ open class AssemblyStickyItemDecoration constructor(
 
         private var stickyItemFactoryKClassList: List<KClass<*>>? = null
 
-        /**
-         * Set the item at the specified position to always be displayed at the top of the RecyclerView
-         */
         override fun position(vararg positions: Int): Builder {
             super.position(*positions)
             return this
         }
 
-        /**
-         * Set the item at the specified position to always be displayed at the top of the RecyclerView
-         */
         override fun position(positions: List<Int>): Builder {
             super.position(positions)
             return this
         }
 
-        /**
-         * Set the item at the specified type to always be displayed at the top of the RecyclerView
-         */
         override fun itemType(vararg itemTypes: Int): Builder {
             super.itemType(*itemTypes)
             return this
         }
 
-        /**
-         * Set the item at the specified type to always be displayed at the top of the RecyclerView
-         */
         override fun itemType(itemTypes: List<Int>): Builder {
             super.itemType(itemTypes)
             return this
         }
 
-        /**
-         * Set the container for sticky item display so that the sticky item can receive click events
-         */
         override fun showInContainer(stickyItemContainer: ViewGroup): Builder {
             super.showInContainer(stickyItemContainer)
+            return this
+        }
+
+        override fun disabledScrollUpStickyItem(disable: Boolean): Builder {
+            super.disabledScrollUpStickyItem(disable)
+            return this
+        }
+
+        override fun invisibleOriginItemWhenStickyItemShowing(open: Boolean): Builder {
+            super.invisibleOriginItemWhenStickyItemShowing(open)
             return this
         }
 
@@ -131,7 +126,11 @@ open class AssemblyStickyItemDecoration constructor(
                 stickyItemTypeList,
                 stickyItemFactoryKClassList,
                 stickyItemContainer,
-            )
+            ).apply {
+                disabledScrollUpStickyItem = this@Builder.disabledScrollUpStickyItem
+                invisibleOriginItemWhenStickyItemShowing =
+                    this@Builder.invisibleOriginItemWhenStickyItemShowing
+            }
         }
     }
 }

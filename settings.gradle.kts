@@ -1,3 +1,3 @@
 include(":sample")
-include(":stickyrecycleritemdecoration")
-include(":stickyrecycleritemdecoration-assemblyadapter4")
+include(":stickyitemdecoration")
+include(":stickyitemdecoration-assemblyadapter4")

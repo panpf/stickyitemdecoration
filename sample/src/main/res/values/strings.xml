@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">StickyRecyclerItemDecoration</string>
+    <string name="app_name">StickyItemDecoration</string>
     <string name="apps_overview_item">Apps: %d (User: %d. Group: %d)</string>
     <string name="apps_overview_item_hor">Apps: %d\nUser: %d\nGroup: %d</string>
     <string name="button_tap_me">TAP ME</string>

@@ -1,94 +1,111 @@
-# StickyRecyclerItemDecoration
+# StickyItemDecoration
 
 ![Platform][platform_image]
 [![API][api_image]][api_link]
 [![Release][version_icon]][version_link]
 [![License][license_image]][license_link]
 
-StickyRecyclerItemDecoration 是 Android 上黏性头部列表的 RecyclerView 实现版本，可方便的将 item 固定显示在列表的顶部并可跟随滑动替换新的 header item，参考自 [StickyItemDecoration]
+[StickyItemDecoration] 可方便的将指定的 item 固定显示在 [RecyclerView] 的顶部并跟随滑动替换新的 sticky item
 
-## 特点
+## 特性
 
-* 用法简单，定义一个 ViewGroup 跟 RecyclerView 顶部保持一致，然后 adapter 实现 StickyRecyclerAdapter 接口即可
-* 支持一个列表中有多种 item type 的 sticky item
-* sticky item 可以接收点击事件
-* 支持 sticky item 背景全透明或半透明，当显示 sticky item 的时候列表内相应的 item 会变成 INVISIBLE 状态，避免半透明背景下，显示重复内容
-* 支持动态更改 sticky item 的高度，但需要你自己做好状态同步，详情请参考 sample 中的 [AppHeaderItem]
+* 用法简单. 只需指定 sticky item 的 position 或 itemType 即可
+* 支持点击. 需要点击时只需额外指定一个专门用来显示 sticky item 的 container 即可
+* 背景支持半透明. 当 sticky item 的背景半透明时，可以开启将列表内相应的 item 变成 INVISIBLE 状态功能，避免半透明背景下，显示重复内容
 
-对比 [StickyItemDecoration]
+## 导入
 
-* 用法更简单，不需要事先在 header ViewGroup 中放入 header 布局以及指定 header item type 的值
-* [StickyItemDecoration] 同时只能有一种类型的 header，StickyRecyclerItemDecoration 支持 N 种
-* 支持 sticky item 背景全透明或半透明
-
-## 使用指南
-
-### 1. 从 mavenCentral 导入
+`该库已发布到 mavenCentral`
 
 ```kotlin
 dependencies {
-    implementation("io.github.panpf.stickyrecycleritemdecoration:stickyrecycleritemdecoration:${LAST_VERSION}")
+    implementation("io.github.panpf.stickyitemdecoration:stickyitemdecoration:${LAST_VERSION}")
+    
+    // Optional. Support AssemblyAdapter 4.0 version to specify sticky item through ItemFactory
+    implementation("io.github.panpf.stickyitemdecoration:stickyitemdecoration-assemblyadapter4:${LAST_VERSION}")
 }
 ```
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (No include 'v')
 
-### 2. 定义布局
+## 使用
+
+### 示例
+
+```kotlin
+// 添加一个 StickyItemDecoration 并指定 position 是 3 和 7 的 item 为 sticky item
+recyclerView.addStickyItemDecorationWithPosition(3, 7)
+
+// 添加一个 StickyItemDecoration 并指定 itemType 是 1 的 item 为 sticky item
+recyclerView.addStickyItemDecorationWithItemType(1)
+
+// 添加一个 StickyItemDecoration 并指定 position 是 3 和 7 或 itemType 是 1 的 item 为 sticky item
+recyclerView.addStickyItemDecoration {
+    position(3, 7)
+    itemType(1)
+}
+```
+
+### 支持 AssemblyAdapter 4
+
+`stickyitemdecoration-assemblyadapter4`
+模块提供了对 [AssemblyAdapter](https://github.com/panpf/assembly-adapter) 的支持
+
+如下：
+
+```kotlin
+// 添加一个 AssemblyStickyItemDecoration 并指定 ItemFactory 是 ListSeparatorItemFactory 的 item 为 sticky item
+recyclerView.addAssemblyStickyItemDecorationWithItemFactory(ListSeparatorItemFactory::class)
+```
+
+[AssemblyStickyItemDecoration] 还支持 position 和 itemType
+
+### 让 sticky item 可点击
+
+默认情况下 [StickyItemDecoration] 将 sticky item 绘制在 [RecyclerView] 的顶部，这种实现方式的弊端就是 sticky item 无法接收点击事件
+
+我们只需要给 [StickyItemDecoration] 指定一个 [FrameLayout] 用来专门显示 sticky item 即可解决这个问题
+
+首先布局中定义一个顶部和 [RecyclerView] 对齐的 [FrameLayout]，如下：
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/main_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/list_item_app" />
+    <android.support.v7.widget.RecyclerView android:id="@+id/mainRecyclerView"
+        android:layout_width="match_parent" android:layout_height="match_parent" />
 
-    <FrameLayout
-        android:id="@+id/main_stickyContainerLayout"
-        android:layout_width="match_parent"
+    <FrameLayout android:id="@+id/mainStickyContainerLayout" android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </FrameLayout>
 ```
 
-如上你需要在布局中定义一个用来显示 header 的 layout，你需要保证其顶部跟 RecyclerView 保持一致
+然后在添加 [StickyItemDecoration] 时指定容器即可，如下：
 
-### 3. 实现 StickyRecyclerAdapter 接口
-
-```java
-public class BaseStickyRecyclerAdapter extends RecyclerView.Adapter implements StickyRecyclerAdapter {
-
-    @Override
-    public boolean isStickyItemByType(int type) {
-        return type == 4;
-    }
+```kotlin
+recyclerView.addStickyItemDecorationWithPosition(3, 7) {
+    showInContainer(findViewById<FrameLayout>(R.id.mainStickyContainerLayout))
 }
 ```
 
-如上让你的 adapter 实现 [StickyRecyclerAdapter] 接口并根据你的实际情况实现 isStickyItemByType(int) 方法
-
-### 4. 使用 StickyRecyclerItemDecoration
+### 其它功能
 
 ```kotlin
-val recyclerView = findViewById(R.id.main_recyclerView)
-val stickyContainerLayout = findViewById(R.id.main_stickyContainerLayout)
+recyclerView.addStickyItemDecorationWithPosition(3, 7) {
+    // 禁止滑动时新的 sticky item 顶替掉旧的 sticky item 效果
+    disabledScrollUpStickyItem()
 
-recyclerView.addItemDecoration(StickyRecyclerItemDecoration(stickyContainerLayout))
-
-recyclerView.adapter = BaseStickyRecyclerAdapter()
+    // sticky item 显示时原始 item 变为 invisible 状态。此功能适用于 sticky item 背景为半透明时使用
+    invisibleOriginItemWhenStickyItemShowing()
+}
 ```
 
-如上将 stickyContainerLayout 交给  [StickyRecyclerItemDecoration] 然后将 [StickyRecyclerItemDecoration] 添加到 RecyclerView 中，最后再配合实现了 [StickyRecyclerAdapter] 接口的 adapter 即可
-
-`完整示例请参考 sample 源码`
+`更多示例请参考 sample 源码`
 
 ## License
-    Copyright (C) 2018 Peng fei Pan <sky@panpf.me>
+
+    Copyright (C) 2021 panpf <panpfpanpf@outlook.me>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -103,13 +120,23 @@ recyclerView.adapter = BaseStickyRecyclerAdapter()
     limitations under the License.
 
 [platform_image]: https://img.shields.io/badge/Platform-Android-brightgreen.svg
+
 [api_image]: https://img.shields.io/badge/API-14%2B-orange.svg
-[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.stickyrecycleritemdecoration/stickyrecycleritemdecoration
-[version_link]: https://repo1.maven.org/maven2/io/github/panpf/stickyrecycleritemdecoration/
+
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.stickyitemdecoration/stickyitemdecoration
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/stickyitemdecoration/
+
 [api_link]: https://android-arsenal.com/api?level=14
+
 [license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
+
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
-[StickyItemDecoration]: https://github.com/oubowu/StickyItemDecoration
-[StickyRecyclerAdapter]:  https://github.com/panpf/StickyRecyclerItemDecoration/blob/master/sticky-recycler-item-decoration/src/main/java/me/panpf/recycler/sticky/StickyRecyclerAdapter.java
-[StickyRecyclerItemDecoration]: https://github.com/panpf/StickyRecyclerItemDecoration/blob/master/sticky-recycler-item-decoration/src/main/java/me/panpf/recycler/sticky/StickyRecyclerItemDecoration.java
-[AppHeaderItem]: https://github.com/panpf/StickyRecyclerItemDecoration/blob/master/sample/src/main/java/me/panpf/recycler/sticky/sample/adapter/item/AppHeaderItem.kt
+
+[StickyItemDecoration]: stickyitemdecoration/src/main/java/com/github/panpf/recycler/sticky/StickyItemDecoration.kt
+
+[AssemblyStickyItemDecoration]: stickyitemdecoration-assemblyadapter4/src/main/java/com/github/panpf/recycler/sticky/assemblyadapter4/AssemblyStickyItemDecoration.kt
+
+[RecyclerView]: https://developer.android.google.cn/reference/androidx/recyclerview/widget/RecyclerView
+
+[FrameLayout]: https://developer.android.google.cn/reference/android/widget/FrameLayout
