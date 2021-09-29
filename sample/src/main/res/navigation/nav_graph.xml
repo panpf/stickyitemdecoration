@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.github.panpf.recycler.sticky.sample.ui.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_linearFragment"
+            app:destination="@id/linearFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_mainFragment_to_linearAssemblyHorFragment"
+            app:destination="@id/linearAssemblyHorFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_mainFragment_to_linearAssemblyFragment"
+            app:destination="@id/linearAssemblyFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_mainFragment_to_staggeredGridAssemblyHorFragment"
+            app:destination="@id/staggeredGridAssemblyHorFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_mainFragment_to_staggeredGridAssemblyFragment"
+            app:destination="@id/staggeredGridAssemblyFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_mainFragment_to_gridAssemblyHorFragment"
+            app:destination="@id/gridAssemblyHorFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_mainFragment_to_gridAssemblyFragment"
+            app:destination="@id/gridAssemblyFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gridAssemblyFragment"
+        android:name="com.github.panpf.recycler.sticky.sample.ui.GridAssemblyFragment"
+        android:label="GridAssemblyFragment"
+        tools:layout="@layout/fragment_recycler">
+        <argument
+            android:name="title"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="subtitle"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="stickyItemClickable"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gridAssemblyHorFragment"
+        android:name="com.github.panpf.recycler.sticky.sample.ui.GridAssemblyHorFragment"
+        android:label="GridAssemblyHorFragment"
+        tools:layout="@layout/fragment_recycler_hor">
+        <argument
+            android:name="title"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="subtitle"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="stickyItemClickable"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/staggeredGridAssemblyFragment"
+        android:name="com.github.panpf.recycler.sticky.sample.ui.StaggeredGridAssemblyFragment"
+        android:label="StaggeredGridAssemblyFragment"
+        tools:layout="@layout/fragment_recycler">
+        <argument
+            android:name="title"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="subtitle"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="stickyItemClickable"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/staggeredGridAssemblyHorFragment"
+        android:name="com.github.panpf.recycler.sticky.sample.ui.StaggeredGridAssemblyHorFragment"
+        android:label="StaggeredGridAssemblyHorFragment"
+        tools:layout="@layout/fragment_recycler_hor">
+        <argument
+            android:name="title"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="subtitle"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="stickyItemClickable"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/linearAssemblyFragment"
+        android:name="com.github.panpf.recycler.sticky.sample.ui.LinearAssemblyFragment"
+        android:label="LinearAssemblyFragment"
+        tools:layout="@layout/fragment_recycler">
+        <argument
+            android:name="title"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="subtitle"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="stickyItemClickable"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/linearAssemblyHorFragment"
+        android:name="com.github.panpf.recycler.sticky.sample.ui.LinearAssemblyHorFragment"
+        android:label="LinearAssemblyHorFragment"
+        tools:layout="@layout/fragment_recycler_hor">
+        <argument
+            android:name="title"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="subtitle"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="stickyItemClickable"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/linearFragment"
+        android:name="com.github.panpf.recycler.sticky.sample.ui.LinearFragment"
+        android:label="LinearFragment"
+        tools:layout="@layout/fragment_recycler">
+        <argument
+            android:name="title"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="subtitle"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="way"
+            android:defaultValue="POSITION"
+            app:argType="com.github.panpf.recycler.sticky.sample.bean.Way" />
+    </fragment>
+</navigation>

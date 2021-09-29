@@ -3,25 +3,31 @@ package com.github.panpf.recycler.sticky.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.recycler.sticky.BuildConfig
 import com.github.panpf.recycler.sticky.StickyItemDecoration
-import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
+import com.github.panpf.recycler.sticky.sample.base.ToolbarFragment
 import com.github.panpf.recycler.sticky.sample.bean.Link
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
+import com.github.panpf.recycler.sticky.sample.bean.Way
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentMainBinding
 import com.github.panpf.recycler.sticky.sample.item.LinkItemFactory
 import com.github.panpf.recycler.sticky.sample.item.ListSeparatorItemFactory
 
-class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
+class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?
     ) = FragmentMainBinding.inflate(inflater, parent, false)
 
-    override fun onInitData(binding: FragmentMainBinding, savedInstanceState: Bundle?) {
+    override fun onInitData(
+        toolbar: Toolbar, binding: FragmentMainBinding, savedInstanceState: Bundle?
+    ) {
         StickyItemDecoration.debugMode = BuildConfig.DEBUG
+
+        MainFragmentDirections.actionMainFragmentToGridAssemblyFragment()
 
         binding.mainRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -35,76 +41,130 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
                     Link(
                         "Linear - Position",
-                        LinearFragment.create(way = LinearFragment.Way.POSITION)
+                        MainFragmentDirections.actionMainFragmentToLinearFragment(
+                            title = "Linear",
+                            subtitle = "Position",
+                            way = Way.POSITION,
+                        )
                     ),
 
                     Link(
                         "Linear - ItemType",
-                        LinearFragment.create(way = LinearFragment.Way.ITEM_TYPE)
+                        MainFragmentDirections.actionMainFragmentToLinearFragment(
+                            title = "Linear",
+                            subtitle = "ItemType",
+                            way = Way.ITEM_TYPE
+                        )
                     ),
 
                     Link(
                         "Linear - Assembly",
-                        LinearAssemblyFragment.create(stickyItemClickable = false)
+                        MainFragmentDirections.actionMainFragmentToLinearAssemblyFragment(
+                            title = "Linear",
+                            subtitle = "Assembly",
+                            stickyItemClickable = false
+                        )
                     ),
 
                     Link(
                         "Linear - Clickable",
-                        LinearAssemblyFragment.create(stickyItemClickable = true)
+                        MainFragmentDirections.actionMainFragmentToLinearAssemblyFragment(
+                            title = "Linear",
+                            subtitle = "Clickable",
+                            stickyItemClickable = true
+                        )
                     ),
 
                     Link(
                         "Linear - Horizontal",
-                        LinearAssemblyHorFragment.create(stickyItemClickable = false)
+                        MainFragmentDirections.actionMainFragmentToLinearAssemblyHorFragment(
+                            title = "Linear",
+                            subtitle = "Horizontal",
+                            stickyItemClickable = false
+                        )
                     ),
 
                     Link(
                         "Linear - Horizontal - Clickable",
-                        LinearAssemblyHorFragment.create(stickyItemClickable = true)
+                        MainFragmentDirections.actionMainFragmentToLinearAssemblyHorFragment(
+                            title = "Linear",
+                            subtitle = "Horizontal - Clickable",
+                            stickyItemClickable = true
+                        )
                     ),
 
                     ListSeparator("Grid"),
 
                     Link(
                         "Grid",
-                        GridAssemblyFragment.create(stickyItemClickable = false)
+                        MainFragmentDirections.actionMainFragmentToGridAssemblyFragment(
+                            title = "Grid",
+                            stickyItemClickable = false
+                        )
                     ),
 
                     Link(
                         "Grid - Clickable",
-                        GridAssemblyFragment.create(stickyItemClickable = true)
+                        MainFragmentDirections.actionMainFragmentToGridAssemblyFragment(
+                            title = "Grid",
+                            subtitle = "Clickable",
+                            stickyItemClickable = true
+                        )
                     ),
 
                     Link(
                         "Grid - Horizontal",
-                        GridAssemblyHorFragment.create(stickyItemClickable = false)
+                        MainFragmentDirections.actionMainFragmentToGridAssemblyHorFragment(
+                            title = "Grid",
+                            subtitle = "Horizontal",
+                            stickyItemClickable = false
+                        )
                     ),
 
                     Link(
                         "Grid - Horizontal - Clickable",
-                        GridAssemblyHorFragment.create(stickyItemClickable = true)
+                        MainFragmentDirections.actionMainFragmentToGridAssemblyHorFragment(
+                            title = "Grid",
+                            subtitle = "Horizontal - Clickable",
+                            stickyItemClickable = true
+                        )
                     ),
 
                     ListSeparator("StaggeredGrid"),
 
                     Link(
                         "StaggeredGrid",
-                        StaggeredGridAssemblyFragment.create(stickyItemClickable = false)
+                        MainFragmentDirections.actionMainFragmentToStaggeredGridAssemblyFragment(
+                            title = "StaggeredGrid",
+                            stickyItemClickable = false
+                        )
                     ),
 
                     Link(
                         "StaggeredGrid - Clickable",
-                        StaggeredGridAssemblyFragment.create(stickyItemClickable = true)
+                        MainFragmentDirections.actionMainFragmentToStaggeredGridAssemblyFragment(
+                            title = "StaggeredGrid",
+                            subtitle = "Clickable",
+                            stickyItemClickable = true
+                        )
                     ),
 
                     Link(
                         "StaggeredGrid - Horizontal",
-                        StaggeredGridAssemblyHorFragment.create(stickyItemClickable = false)
+                        MainFragmentDirections.actionMainFragmentToStaggeredGridAssemblyHorFragment(
+                            title = "StaggeredGrid",
+                            subtitle = "Horizontal",
+                            stickyItemClickable = false
+                        )
                     ),
 
                     Link(
                         "StaggeredGrid - Horizontal - Clickable",
-                        StaggeredGridAssemblyHorFragment.create(stickyItemClickable = true)
+                        MainFragmentDirections.actionMainFragmentToStaggeredGridAssemblyHorFragment(
+                            title = "StaggeredGrid",
+                            subtitle = "Horizontal - Clickable",
+                            stickyItemClickable = true
+                        )
                     ),
                 )
             )

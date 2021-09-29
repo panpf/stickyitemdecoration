@@ -17,40 +17,28 @@ package com.github.panpf.recycler.sticky.sample.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.recycler.sticky.StickyItemDecoration
 import com.github.panpf.recycler.sticky.addStickyItemDecorationWithItemType
 import com.github.panpf.recycler.sticky.addStickyItemDecorationWithPosition
-import com.github.panpf.recycler.sticky.sample.base.BaseBindingFragment
+import com.github.panpf.recycler.sticky.sample.base.ToolbarFragment
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
+import com.github.panpf.recycler.sticky.sample.bean.Way
 import com.github.panpf.recycler.sticky.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.recycler.sticky.sample.item.AppListAdapter
-import com.github.panpf.recycler.sticky.sample.vm.MenuViewModel
 import com.github.panpf.recycler.sticky.sample.vm.PinyinFlatAppsViewModel
 
-class LinearFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
+class LinearFragment : ToolbarFragment<FragmentRecyclerBinding>() {
 
-    companion object {
-        fun create(way: Way): LinearFragment = LinearFragment().apply {
-            arguments = bundleOf("way" to way.name)
-        }
-    }
+    private val args: LinearFragmentArgs by navArgs()
 
-    enum class Way {
-        POSITION, ITEM_TYPE
-    }
-
-    private val way by lazy { Way.valueOf(arguments?.getString("way") ?: Way.POSITION.name) }
-
-    private val viewModel by viewModels<PinyinFlatAppsViewModel>()
-    private val menuViewModel by activityViewModels<MenuViewModel>()
-
-    private var disabledScrollUpStickyItem = false
-    private var invisibleOriginItemWhenStickyItemShowing = false
+    private val viewModel by activityViewModels<PinyinFlatAppsViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup?
@@ -58,7 +46,20 @@ class LinearFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
         return FragmentRecyclerBinding.inflate(inflater, parent, false)
     }
 
-    override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
+    override fun onInitViews(
+        toolbar: Toolbar,
+        binding: FragmentRecyclerBinding,
+        savedInstanceState: Bundle?
+    ) {
+        initMenu(toolbar, binding.recyclerRecycler)
+    }
+
+    override fun onInitData(
+        toolbar: Toolbar, binding: FragmentRecyclerBinding, savedInstanceState: Bundle?
+    ) {
+        toolbar.title = args.title
+        toolbar.subtitle = args.subtitle
+
         binding.recyclerRecycler.apply {
             adapter = AppListAdapter()
             layoutManager = LinearLayoutManager(
@@ -70,7 +71,7 @@ class LinearFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
         viewModel.pinyinFlatAppListData.observe(viewLifecycleOwner) {
             val dataList = listOf(viewModel.appsOverviewData.value!!).plus(it ?: emptyList())
-            if (way == Way.POSITION) {
+            if (args.way == Way.POSITION) {
                 val listSeparatorPositionList = ArrayList<Int>()
                 dataList.forEachIndexed { index, item ->
                     if (item is ListSeparator) {
@@ -85,44 +86,37 @@ class LinearFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             }
             (binding.recyclerRecycler.adapter!! as AppListAdapter).submitList(dataList)
         }
-
-        menuViewModel.menuClickEvent.listen(viewLifecycleOwner) {
-            when (it?.id) {
-                1 -> {
-                    disabledScrollUpStickyItem = !disabledScrollUpStickyItem
-                    binding.recyclerRecycler.apply {
-                        (getItemDecorationAt(0) as StickyItemDecoration)
-                            .disabledScrollUpStickyItem = disabledScrollUpStickyItem
-                        postInvalidate()
-                    }
-                    menuViewModel.menuInfoListData.postValue(buildMenuInfoList())
-                }
-                2 -> {
-                    invisibleOriginItemWhenStickyItemShowing =
-                        !invisibleOriginItemWhenStickyItemShowing
-                    binding.recyclerRecycler.apply {
-                        (getItemDecorationAt(0) as StickyItemDecoration)
-                            .invisibleOriginItemWhenStickyItemShowing =
-                            invisibleOriginItemWhenStickyItemShowing
-                        postInvalidate()
-                    }
-                    menuViewModel.menuInfoListData.postValue(buildMenuInfoList())
-                }
-            }
-        }
-        menuViewModel.menuInfoListData.postValue(buildMenuInfoList())
     }
 
-    private fun buildMenuInfoList(): List<MenuViewModel.MenuInfo> {
-        return listOf(
-            MenuViewModel.MenuInfo(
-                1,
-                if (disabledScrollUpStickyItem) "EnableScrollStickyItem" else "DisableScrollStickyItem"
-            ),
-            MenuViewModel.MenuInfo(
-                2,
-                if (invisibleOriginItemWhenStickyItemShowing) "ShowOriginStickyItem" else "HiddenOriginStickyItem"
-            ),
-        )
+    private fun initMenu(toolbar: Toolbar, recyclerView: RecyclerView) {
+        toolbar.menu.add(
+            0, 1, 0,
+            "DisableScrollStickyItem"
+        ).apply {
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
+        }.setOnMenuItemClickListener {
+            val stickyItemDecoration = recyclerView.getItemDecorationAt(0) as StickyItemDecoration
+            stickyItemDecoration.disabledScrollUpStickyItem =
+                !stickyItemDecoration.disabledScrollUpStickyItem
+            recyclerView.postInvalidate()
+            it.title =
+                if (stickyItemDecoration.disabledScrollUpStickyItem) "EnableScrollStickyItem" else "DisableScrollStickyItem"
+            true
+        }
+
+        toolbar.menu.add(
+            0, 2, 1,
+            "HiddenOriginStickyItem"
+        ).apply {
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
+        }.setOnMenuItemClickListener {
+            val stickyItemDecoration = recyclerView.getItemDecorationAt(0) as StickyItemDecoration
+            stickyItemDecoration.invisibleOriginItemWhenStickyItemShowing =
+                !stickyItemDecoration.invisibleOriginItemWhenStickyItemShowing
+            recyclerView.postInvalidate()
+            it.title =
+                if (stickyItemDecoration.invisibleOriginItemWhenStickyItemShowing) "ShowOriginStickyItem" else "HiddenOriginStickyItem"
+            true
+        }
     }
 }

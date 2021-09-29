@@ -33,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appHorItemIconImage"
-        tools:text="谷歌浏览器谷歌浏览器谷歌浏览器谷歌浏览器谷歌浏览器谷歌浏" />
+        tools:text="谷歌浏览器" />
 
     <TextView
         android:id="@+id/appHorItemVersionText"

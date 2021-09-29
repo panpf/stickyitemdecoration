@@ -12,12 +12,5 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-
-        val binding = ActivityMainBinding.inflate(LayoutInflater.from(this), null, false)
-        setContentView(binding.root)
-
-        supportFragmentManager.beginTransaction()
-            .replace(binding.mainFragmentContainerView.id, MainFragment())
-            .commit()
     }
 }

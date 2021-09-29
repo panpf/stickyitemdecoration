@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-parcelize")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -36,6 +37,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":stickyitemdecoration"))
+    implementation(project(":stickyitemdecoration-assemblyadapter4"))
+
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN")}")
 
     implementation("androidx.appcompat:appcompat:${property("ANDROIDX_APPCOMPAT")}")
@@ -43,11 +47,11 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${property("ANDROIDX_LIFECYCLE")}")
     implementation("androidx.constraintlayout:constraintlayout:${property("ANDROIDX_CONSTRAINTLAYOUT")}")
-    implementation("com.google.android.material:material:${property("GOOGLE_MATERIAL")}")
+    implementation("androidx.navigation:navigation-fragment-ktx:${property("ANDROIDX_NAVIGATION")}")
+    implementation("androidx.navigation:navigation-ui-ktx:${property("ANDROIDX_NAVIGATION")}")
 
+    implementation("com.google.android.material:material:${property("GOOGLE_MATERIAL")}")
     implementation("me.panpf:sketch:${property("SKETCH_VERSION")}")
-    implementation(project(":stickyitemdecoration"))
-    implementation(project(":stickyitemdecoration-assemblyadapter4"))
     implementation("com.github.promeg:tinypinyin:${property("TINYPINYIN")}")
     implementation("io.github.panpf.liveevent:liveevent:${property("LIVEEVENT")}")
     implementation("io.github.panpf.tools4a:tools4a-dimen-ktx:${property("TOOLS4A")}")
