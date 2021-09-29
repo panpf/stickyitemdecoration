@@ -1,4 +1,4 @@
-## new
+## v1.0.1
 
 fix: Fix the bug that the parameter of `invisibleOriginItemWhenStickyItemShowing` is invalid in
 horizontal layout
