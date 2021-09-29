@@ -85,7 +85,10 @@ abstract class StickyItemPainter(private val stickyItemDecoration: StickyItemDec
             // 这是因为在 sticky header 显示出来之前隐藏了 stickyItemView
             // 因此限定 originStickyItemView.getTop() < 0 也就是说 sticky item 和 sticky header 错开的时候隐藏 sticky item 可以一定程度上避免闪烁，
             // 但滑动的快了还是会闪烁一下
-            if (originStickyItemView != null && originStickyItemView.visibility != View.INVISIBLE && originStickyItemView.top < 0) {
+            if (originStickyItemView != null
+                && originStickyItemView.visibility != View.INVISIBLE
+                && (if (isVertical(parent)) originStickyItemView.top else originStickyItemView.left) < 0
+            ) {
                 originStickyItemView.visibility = View.INVISIBLE
                 invisibleItemView = originStickyItemView
             }
