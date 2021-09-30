@@ -2,64 +2,14 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_nav"
+    android:id="@+id/nav_main"
     app:startDestination="@id/mainFragment">
 
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.github.panpf.recycler.sticky.sample.ui.MainFragment"
         android:label="MainFragment"
-        tools:layout="@layout/fragment_main">
-        <action
-            android:id="@+id/action_mainFragment_to_linearFragment"
-            app:destination="@id/linearFragment"
-            app:enterAnim="@anim/nav_enter"
-            app:exitAnim="@anim/nav_exit"
-            app:popEnterAnim="@anim/nav_pop_enter"
-            app:popExitAnim="@anim/nav_pop_exit" />
-        <action
-            android:id="@+id/action_mainFragment_to_linearAssemblyHorFragment"
-            app:destination="@id/linearAssemblyHorFragment"
-            app:enterAnim="@anim/nav_enter"
-            app:exitAnim="@anim/nav_exit"
-            app:popEnterAnim="@anim/nav_pop_enter"
-            app:popExitAnim="@anim/nav_pop_exit" />
-        <action
-            android:id="@+id/action_mainFragment_to_linearAssemblyFragment"
-            app:destination="@id/linearAssemblyFragment"
-            app:enterAnim="@anim/nav_enter"
-            app:exitAnim="@anim/nav_exit"
-            app:popEnterAnim="@anim/nav_pop_enter"
-            app:popExitAnim="@anim/nav_pop_exit" />
-        <action
-            android:id="@+id/action_mainFragment_to_staggeredGridAssemblyHorFragment"
-            app:destination="@id/staggeredGridAssemblyHorFragment"
-            app:enterAnim="@anim/nav_enter"
-            app:exitAnim="@anim/nav_exit"
-            app:popEnterAnim="@anim/nav_pop_enter"
-            app:popExitAnim="@anim/nav_pop_exit" />
-        <action
-            android:id="@+id/action_mainFragment_to_staggeredGridAssemblyFragment"
-            app:destination="@id/staggeredGridAssemblyFragment"
-            app:enterAnim="@anim/nav_enter"
-            app:exitAnim="@anim/nav_exit"
-            app:popEnterAnim="@anim/nav_pop_enter"
-            app:popExitAnim="@anim/nav_pop_exit" />
-        <action
-            android:id="@+id/action_mainFragment_to_gridAssemblyHorFragment"
-            app:destination="@id/gridAssemblyHorFragment"
-            app:enterAnim="@anim/nav_enter"
-            app:exitAnim="@anim/nav_exit"
-            app:popEnterAnim="@anim/nav_pop_enter"
-            app:popExitAnim="@anim/nav_pop_exit" />
-        <action
-            android:id="@+id/action_mainFragment_to_gridAssemblyFragment"
-            app:destination="@id/gridAssemblyFragment"
-            app:enterAnim="@anim/nav_enter"
-            app:exitAnim="@anim/nav_exit"
-            app:popEnterAnim="@anim/nav_pop_enter"
-            app:popExitAnim="@anim/nav_pop_exit" />
-    </fragment>
+        tools:layout="@layout/fragment_main"/>
 
     <fragment
         android:id="@+id/gridAssemblyFragment"
@@ -207,4 +157,54 @@
             android:defaultValue="POSITION"
             app:argType="com.github.panpf.recycler.sticky.sample.bean.Way" />
     </fragment>
+
+    <action
+        android:id="@+id/action_global_linearFragment"
+        app:destination="@id/linearFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_linearAssemblyHorFragment"
+        app:destination="@id/linearAssemblyHorFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_linearAssemblyFragment"
+        app:destination="@id/linearAssemblyFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_staggeredGridAssemblyHorFragment"
+        app:destination="@id/staggeredGridAssemblyHorFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_staggeredGridAssemblyFragment"
+        app:destination="@id/staggeredGridAssemblyFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_gridAssemblyHorFragment"
+        app:destination="@id/gridAssemblyHorFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_gridAssemblyFragment"
+        app:destination="@id/gridAssemblyFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
 </navigation>

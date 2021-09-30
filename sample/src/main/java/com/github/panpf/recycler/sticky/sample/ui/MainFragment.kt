@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.recycler.sticky.BuildConfig
 import com.github.panpf.recycler.sticky.StickyItemDecoration
+import com.github.panpf.recycler.sticky.sample.NavMainDirections
 import com.github.panpf.recycler.sticky.sample.base.ToolbarFragment
 import com.github.panpf.recycler.sticky.sample.bean.Link
 import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
@@ -27,8 +28,6 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
     ) {
         StickyItemDecoration.debugMode = BuildConfig.DEBUG
 
-        MainFragmentDirections.actionMainFragmentToGridAssemblyFragment()
-
         binding.mainRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = AssemblyRecyclerAdapter(
@@ -41,7 +40,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "Linear - Position",
-                        MainFragmentDirections.actionMainFragmentToLinearFragment(
+                        NavMainDirections.actionGlobalLinearFragment(
                             title = "Linear",
                             subtitle = "Position",
                             way = Way.POSITION,
@@ -50,7 +49,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "Linear - ItemType",
-                        MainFragmentDirections.actionMainFragmentToLinearFragment(
+                        NavMainDirections.actionGlobalLinearFragment(
                             title = "Linear",
                             subtitle = "ItemType",
                             way = Way.ITEM_TYPE
@@ -59,7 +58,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "Linear - Assembly",
-                        MainFragmentDirections.actionMainFragmentToLinearAssemblyFragment(
+                        NavMainDirections.actionGlobalLinearAssemblyFragment(
                             title = "Linear",
                             subtitle = "Assembly",
                             stickyItemClickable = false
@@ -68,7 +67,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "Linear - Clickable",
-                        MainFragmentDirections.actionMainFragmentToLinearAssemblyFragment(
+                        NavMainDirections.actionGlobalLinearAssemblyFragment(
                             title = "Linear",
                             subtitle = "Clickable",
                             stickyItemClickable = true
@@ -77,7 +76,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "Linear - Horizontal",
-                        MainFragmentDirections.actionMainFragmentToLinearAssemblyHorFragment(
+                        NavMainDirections.actionGlobalLinearAssemblyHorFragment(
                             title = "Linear",
                             subtitle = "Horizontal",
                             stickyItemClickable = false
@@ -86,7 +85,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "Linear - Horizontal - Clickable",
-                        MainFragmentDirections.actionMainFragmentToLinearAssemblyHorFragment(
+                        NavMainDirections.actionGlobalLinearAssemblyHorFragment(
                             title = "Linear",
                             subtitle = "Horizontal - Clickable",
                             stickyItemClickable = true
@@ -97,7 +96,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "Grid",
-                        MainFragmentDirections.actionMainFragmentToGridAssemblyFragment(
+                        NavMainDirections.actionGlobalGridAssemblyFragment(
                             title = "Grid",
                             stickyItemClickable = false
                         )
@@ -105,7 +104,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "Grid - Clickable",
-                        MainFragmentDirections.actionMainFragmentToGridAssemblyFragment(
+                        NavMainDirections.actionGlobalGridAssemblyFragment(
                             title = "Grid",
                             subtitle = "Clickable",
                             stickyItemClickable = true
@@ -114,7 +113,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "Grid - Horizontal",
-                        MainFragmentDirections.actionMainFragmentToGridAssemblyHorFragment(
+                        NavMainDirections.actionGlobalGridAssemblyHorFragment(
                             title = "Grid",
                             subtitle = "Horizontal",
                             stickyItemClickable = false
@@ -123,7 +122,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "Grid - Horizontal - Clickable",
-                        MainFragmentDirections.actionMainFragmentToGridAssemblyHorFragment(
+                        NavMainDirections.actionGlobalGridAssemblyHorFragment(
                             title = "Grid",
                             subtitle = "Horizontal - Clickable",
                             stickyItemClickable = true
@@ -134,7 +133,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "StaggeredGrid",
-                        MainFragmentDirections.actionMainFragmentToStaggeredGridAssemblyFragment(
+                        NavMainDirections.actionGlobalStaggeredGridAssemblyFragment(
                             title = "StaggeredGrid",
                             stickyItemClickable = false
                         )
@@ -142,7 +141,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "StaggeredGrid - Clickable",
-                        MainFragmentDirections.actionMainFragmentToStaggeredGridAssemblyFragment(
+                        NavMainDirections.actionGlobalStaggeredGridAssemblyFragment(
                             title = "StaggeredGrid",
                             subtitle = "Clickable",
                             stickyItemClickable = true
@@ -151,7 +150,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "StaggeredGrid - Horizontal",
-                        MainFragmentDirections.actionMainFragmentToStaggeredGridAssemblyHorFragment(
+                        NavMainDirections.actionGlobalStaggeredGridAssemblyHorFragment(
                             title = "StaggeredGrid",
                             subtitle = "Horizontal",
                             stickyItemClickable = false
@@ -160,7 +159,7 @@ class MainFragment : ToolbarFragment<FragmentMainBinding>() {
 
                     Link(
                         "StaggeredGrid - Horizontal - Clickable",
-                        MainFragmentDirections.actionMainFragmentToStaggeredGridAssemblyHorFragment(
+                        NavMainDirections.actionGlobalStaggeredGridAssemblyHorFragment(
                             title = "StaggeredGrid",
                             subtitle = "Horizontal - Clickable",
                             stickyItemClickable = true

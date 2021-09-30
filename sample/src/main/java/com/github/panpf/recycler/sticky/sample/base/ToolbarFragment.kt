@@ -20,7 +20,6 @@ abstract class ToolbarFragment<VIEW_BINDING : ViewBinding> : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_toolbar, container, false).apply {
             val toolbar = findViewById<Toolbar>(R.id.toolbarFragmentToolbar)
             val contentContainer = findViewById<FrameLayout>(R.id.toolbarFragmentContent)
