@@ -1,3 +1,7 @@
+## new
+
+fix: Fix the bug that StickyItemPainter still uses the outdated position to get the itemType when the adapter's itemCount changes from greater than 0 to 0, causing a crash
+
 ## v1.0.1
 
 fix: Fix the bug that the parameter of `invisibleOriginItemWhenStickyItemShowing` is invalid in

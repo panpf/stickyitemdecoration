@@ -70,6 +70,7 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
         val lastStickyItemViewHolder = lastStickyItemViewHolder ?: return
         val lastStickyItemType = lastStickyItemType ?: return
         val lastParent = lastParent ?: return
+        if (lastStickyItemPosition >= adapter.itemCount) return
         val stickyItemType = adapter.getItemViewType(lastStickyItemPosition)
         if (stickyItemType == lastStickyItemType) {
             updateViewHolderData(
@@ -85,28 +86,28 @@ class DrawStickyItemPainter(stickyItemDecoration: StickyItemDecoration) :
     private fun prepareStickyItemView(
         parent: RecyclerView,
         adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
-        stickItemPosition: Int,
+        stickyItemPosition: Int,
         logBuilder: StringBuilder?,
     ): View {
         val lastStickyItemViewHolder = lastStickyItemViewHolder
-        val lastStickItemPosition = lastStickyItemPosition
+        val lastStickyItemPosition = lastStickyItemPosition
         val lastStickyItemType = lastStickyItemType
         val lastParent = lastParent
-        val stickyItemType = adapter.getItemViewType(stickItemPosition)
+        val stickyItemType = adapter.getItemViewType(stickyItemPosition)
         return if (
             lastStickyItemViewHolder == null
             || lastParent == null
-            || stickItemPosition != lastStickItemPosition
+            || stickyItemPosition != lastStickyItemPosition
             || stickyItemType != lastStickyItemType
         ) {
             val stickyItemViewHolder = viewHolderCachePool[stickyItemType]
                 ?: adapter.createViewHolder(parent, stickyItemType).apply {
                     viewHolderCachePool.put(stickyItemType, this)
                 }
-            updateViewHolderData(stickyItemViewHolder, stickItemPosition, parent, adapter)
+            updateViewHolderData(stickyItemViewHolder, stickyItemPosition, parent, adapter)
             measureAndLayout(stickyItemViewHolder.itemView, parent)
 
-            this@DrawStickyItemPainter.lastStickyItemPosition = stickItemPosition
+            this@DrawStickyItemPainter.lastStickyItemPosition = stickyItemPosition
             this@DrawStickyItemPainter.lastStickyItemViewHolder = stickyItemViewHolder
             this@DrawStickyItemPainter.lastStickyItemType = stickyItemType
             this@DrawStickyItemPainter.lastParent = parent
