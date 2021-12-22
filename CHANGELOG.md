@@ -1,4 +1,4 @@
-## new
+## v1.0.2
 
 fix: Fix the bug that StickyItemPainter still uses the outdated position to get the itemType when the adapter's itemCount changes from greater than 0 to 0, causing a crash
 
