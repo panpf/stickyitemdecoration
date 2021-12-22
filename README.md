@@ -11,7 +11,7 @@
 
 * 用法简单. 只需指定 sticky item 的 position 或 itemType 即可
 * 支持点击. 需要点击时只需额外指定一个专门用来显示 sticky item 的 container 即可
-* 背景支持半透明. 当 sticky item 的背景半透明时，可以开启将列表内相应的 item 变成 INVISIBLE 状态功能，避免半透明背景下，显示重复内容
+* 支持半透明背景. 当 sticky item 的背景半透明时，可以开启将列表内相应的 item 变成 INVISIBLE 状态功能，避免半透明背景下，显示重复内容
 
 ## 导入
 
